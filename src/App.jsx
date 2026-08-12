@@ -118,6 +118,34 @@ const AI_REWRITE_PRESETS = {
 
 export default function App() {
   // --- States ---
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem('post_composer_auth') === 'true';
+  });
+  const [userRole, setUserRole] = useState(() => {
+    return sessionStorage.getItem('post_composer_role') || 'viewer';
+  });
+  const [loginId, setLoginId] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  
+  const handleLoginSubmit = (e) => {
+    if (e) e.preventDefault();
+    setLoginError('');
+    if (loginId === 'admin' && loginPassword === 'password123') {
+      setIsAuthenticated(true);
+      setUserRole('admin');
+      sessionStorage.setItem('post_composer_auth', 'true');
+      sessionStorage.setItem('post_composer_role', 'admin');
+    } else if (loginId === 'viewer' && loginPassword === 'password123') {
+      setIsAuthenticated(true);
+      setUserRole('viewer');
+      sessionStorage.setItem('post_composer_auth', 'true');
+      sessionStorage.setItem('post_composer_role', 'viewer');
+    } else {
+      setLoginError('Invalid Username/ID or Password.');
+    }
+  };
+
   const [selectedPlatforms, setSelectedPlatforms] = useState(['twitter', 'linkedin']);
   const [unifiedContent, setUnifiedContent] = useState('');
   
@@ -506,11 +534,236 @@ export default function App() {
     });
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        background: 'var(--bg-dark)', 
+        color: 'var(--text-main)',
+        fontFamily: 'Inter, sans-serif',
+        padding: '20px',
+        position: 'relative'
+      }}>
+        {/* Ambient glow backgrounds */}
+        <div style={{
+          position: 'absolute',
+          width: '400px',
+          height: '400px',
+          background: 'radial-gradient(circle, rgba(106, 17, 203, 0.18) 0%, transparent 70%)',
+          top: '15%',
+          left: '20%',
+          filter: 'blur(60px)',
+          pointerEvents: 'none'
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          width: '400px',
+          height: '400px',
+          background: 'radial-gradient(circle, rgba(37, 117, 252, 0.12) 0%, transparent 70%)',
+          bottom: '15%',
+          right: '20%',
+          filter: 'blur(60px)',
+          pointerEvents: 'none'
+        }}></div>
+
+        <div className="glass-panel" style={{
+          width: '840px',
+          maxWidth: '100%',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          overflow: 'hidden',
+          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.55)',
+          borderRadius: '20px',
+          zIndex: 1
+        }}>
+          
+          {/* Left Panel: Form */}
+          <div style={{ padding: '2.5rem 2rem', borderRight: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '2rem' }}>
+              <Sparkles size={22} style={{ color: 'var(--twitter-blue)', filter: 'drop-shadow(0 0 5px var(--twitter-blue))' }} />
+              <span style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: '1.2rem', letterSpacing: '1px', textTransform: 'uppercase' }}>OmniCompose Gate</span>
+            </div>
+            
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem', color: 'white' }}>Welcome Back</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>Unlock the post composer with your credentials.</p>
+
+            {loginError && (
+              <div style={{
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid rgba(239, 68, 68, 0.2)',
+                color: '#fca5a5',
+                padding: '10px 12px',
+                borderRadius: '8px',
+                fontSize: '0.8rem',
+                marginBottom: '1.2rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <AlertCircle size={16} />
+                <span>{loginError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleLoginSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label" style={{ fontSize: '0.78rem' }}>Username / ID</label>
+                <input
+                  type="text"
+                  value={loginId}
+                  onChange={(e) => setLoginId(e.target.value)}
+                  placeholder="Enter Username"
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    border: '1px solid var(--panel-border)',
+                    borderRadius: '8px',
+                    color: 'white',
+                    fontSize: '0.9rem'
+                  }}
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label" style={{ fontSize: '0.78rem' }}>Password</label>
+                <input
+                  type="password"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  placeholder="Enter Password"
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    border: '1px solid var(--panel-border)',
+                    borderRadius: '8px',
+                    color: 'white',
+                    fontSize: '0.9rem'
+                  }}
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="btn-generate"
+                style={{
+                  marginTop: '0.5rem',
+                  background: 'linear-gradient(135deg, var(--twitter-blue) 0%, #4f46e5 100%)',
+                  boxShadow: '0 4px 15px rgba(29, 155, 240, 0.25)',
+                  fontSize: '0.9rem',
+                  padding: '0.75rem'
+                }}
+              >
+                Sign In
+              </button>
+            </form>
+          </div>
+
+          {/* Right Panel: Quick Fills */}
+          <div style={{ padding: '2.5rem 2rem', background: 'rgba(255,255,255,0.01)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '0.4rem', color: 'white' }}>Quick-Fill Profiles</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem', marginBottom: '1.5rem' }}>Select a predefined profile to test composer access states.</p>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {/* Admin Card */}
+              <div 
+                onClick={() => {
+                  setLoginId('admin');
+                  setLoginPassword('password123');
+                  setIsAuthenticated(true);
+                  setUserRole('admin');
+                  sessionStorage.setItem('post_composer_auth', 'true');
+                  sessionStorage.setItem('post_composer_role', 'admin');
+                }}
+                className="glass-panel"
+                style={{
+                  padding: '12px 16px',
+                  cursor: 'pointer',
+                  background: 'rgba(255,255,255,0.02)',
+                  transition: 'all 0.2s ease',
+                  border: '1px solid rgba(255,255,255,0.05)'
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.4)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)'; e.currentTarget.style.transform = 'none'; }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'white' }}>Admin Profile</span>
+                  <span style={{ fontSize: '0.65rem', fontWeight: 800, padding: '1px 5px', borderRadius: '3px', background: 'rgba(106, 17, 203, 0.2)', color: '#a855f7', border: '1px solid rgba(106, 17, 203, 0.4)' }}>FULL ACCESS</span>
+                </div>
+                <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.3 }}>Full write operations, platform selector switches, AI rewriting assist, and media uploading.</p>
+              </div>
+
+              {/* Viewer Card */}
+              <div 
+                onClick={() => {
+                  setLoginId('viewer');
+                  setLoginPassword('password123');
+                  setIsAuthenticated(true);
+                  setUserRole('viewer');
+                  sessionStorage.setItem('post_composer_auth', 'true');
+                  sessionStorage.setItem('post_composer_role', 'viewer');
+                }}
+                className="glass-panel"
+                style={{
+                  padding: '12px 16px',
+                  cursor: 'pointer',
+                  background: 'rgba(255,255,255,0.02)',
+                  transition: 'all 0.2s ease',
+                  border: '1px solid rgba(255,255,255,0.05)'
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.4)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)'; e.currentTarget.style.transform = 'none'; }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'white' }}>Viewer Profile</span>
+                  <span style={{ fontSize: '0.65rem', fontWeight: 800, padding: '1px 5px', borderRadius: '3px', background: 'rgba(14, 165, 233, 0.2)', color: '#38bdf8', border: '1px solid rgba(14, 165, 233, 0.4)' }}>READ ONLY</span>
+                </div>
+                <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.3 }}>Allows viewing current drafts and previews. Content modification, file upload, and publishing are locked.</p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ padding: '2rem 1.5rem', maxWidth: '1400px', width: '100%', margin: '0 auto' }}>
       
       {/* HEADER SECTION */}
-      <header style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+      <header style={{ textAlign: 'center', marginBottom: '2.5rem', position: 'relative' }}>
+        <button 
+          onClick={() => {
+            setIsAuthenticated(false);
+            setUserRole('viewer');
+            sessionStorage.removeItem('post_composer_auth');
+            sessionStorage.removeItem('post_composer_role');
+          }}
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            color: 'var(--text-muted)',
+            padding: '6px 12px',
+            borderRadius: '6px',
+            fontSize: '0.78rem',
+            fontWeight: 600,
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.3)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'; }}
+        >
+          Log Out
+        </button>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.8rem', marginBottom: '0.4rem' }}>
           <Sparkles size={26} style={{ color: 'var(--twitter-blue)', filter: 'drop-shadow(0 0 8px var(--twitter-blue))' }} />
           <span style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: '1.4rem', letterSpacing: '1px', textTransform: 'uppercase' }}>OmniCompose</span>
@@ -544,16 +797,17 @@ export default function App() {
                   return (
                     <div 
                       key={plat.id}
-                      onClick={() => togglePlatform(plat.id)}
+                      onClick={() => userRole !== 'viewer' && togglePlatform(plat.id)}
                       className="glass-panel"
                       style={{
                         padding: '1rem 0.5rem',
                         textAlign: 'center',
-                        cursor: 'pointer',
+                        cursor: userRole === 'viewer' ? 'not-allowed' : 'pointer',
                         borderColor: active ? plat.color : 'var(--panel-border)',
                         background: active ? `rgba(${parseInt(plat.color.slice(1,3),16)}, ${parseInt(plat.color.slice(3,5),16)}, ${parseInt(plat.color.slice(5,7),16)}, 0.08)` : 'rgba(255,255,255,0.02)',
                         boxShadow: active ? `0 0 12px ${plat.color}40` : 'none',
-                        transition: 'all 0.25s ease'
+                        transition: 'all 0.25s ease',
+                        opacity: userRole === 'viewer' ? 0.6 : 1
                       }}
                     >
                       <Icon size={24} style={{ color: active ? plat.color : 'var(--text-muted)', marginBottom: '0.4rem' }} />
@@ -629,13 +883,15 @@ export default function App() {
                 <textarea
                   value={activeTab === 'unified' ? unifiedContent : overrides[activeTab]}
                   onChange={handleTextChange}
-                  placeholder={activeTab === 'unified' ? "Draft your social post here... Select platforms above to check limits." : `Type your specific override text for ${PLATFORMS[activeTab].name}...`}
+                  disabled={userRole === 'viewer'}
+                  placeholder={userRole === 'viewer' ? "Read-Only Mode: You are logged in as a Viewer and cannot modify the text content." : (activeTab === 'unified' ? "Draft your social post here... Select platforms above to check limits." : `Type your specific override text for ${PLATFORMS[activeTab].name}...`)}
                   style={{
                     width: '100%',
                     height: '140px',
                     resize: 'none',
                     lineHeight: '1.5',
-                    paddingRight: '2rem'
+                    paddingRight: '2rem',
+                    cursor: userRole === 'viewer' ? 'not-allowed' : 'text'
                   }}
                 />
                 
@@ -742,36 +998,36 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => handleAiRewrite('professional')}
-                  disabled={isAiLoading}
+                  disabled={isAiLoading || userRole === 'viewer'}
                   className="glass-panel"
-                  style={{ padding: '0.6rem', border: '1px solid var(--panel-border)', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 600, color: '#fff', cursor: 'pointer', background: 'rgba(255,255,255,0.02)' }}
+                  style={{ padding: '0.6rem', border: '1px solid var(--panel-border)', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 600, color: '#fff', cursor: userRole === 'viewer' ? 'not-allowed' : 'pointer', background: 'rgba(255,255,255,0.02)', opacity: userRole === 'viewer' ? 0.4 : 1 }}
                 >
                   👔 Professional
                 </button>
                 <button
                   type="button"
                   onClick={() => handleAiRewrite('hype')}
-                  disabled={isAiLoading}
+                  disabled={isAiLoading || userRole === 'viewer'}
                   className="glass-panel"
-                  style={{ padding: '0.6rem', border: '1px solid var(--panel-border)', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 600, color: '#fff', cursor: 'pointer', background: 'rgba(255,255,255,0.02)' }}
+                  style={{ padding: '0.6rem', border: '1px solid var(--panel-border)', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 600, color: '#fff', cursor: userRole === 'viewer' ? 'not-allowed' : 'pointer', background: 'rgba(255,255,255,0.02)', opacity: userRole === 'viewer' ? 0.4 : 1 }}
                 >
                   🔥 Hype / Viral
                 </button>
                 <button
                   type="button"
                   onClick={() => handleAiRewrite('brief')}
-                  disabled={isAiLoading}
+                  disabled={isAiLoading || userRole === 'viewer'}
                   className="glass-panel"
-                  style={{ padding: '0.6rem', border: '1px solid var(--panel-border)', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 600, color: '#fff', cursor: 'pointer', background: 'rgba(255,255,255,0.02)' }}
+                  style={{ padding: '0.6rem', border: '1px solid var(--panel-border)', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 600, color: '#fff', cursor: userRole === 'viewer' ? 'not-allowed' : 'pointer', background: 'rgba(255,255,255,0.02)', opacity: userRole === 'viewer' ? 0.4 : 1 }}
                 >
                   ⚡ Concise
                 </button>
                 <button
                   type="button"
                   onClick={() => handleAiRewrite('humor')}
-                  disabled={isAiLoading}
+                  disabled={isAiLoading || userRole === 'viewer'}
                   className="glass-panel"
-                  style={{ padding: '0.6rem', border: '1px solid var(--panel-border)', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 600, color: '#fff', cursor: 'pointer', background: 'rgba(255,255,255,0.02)' }}
+                  style={{ padding: '0.6rem', border: '1px solid var(--panel-border)', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 600, color: '#fff', cursor: userRole === 'viewer' ? 'not-allowed' : 'pointer', background: 'rgba(255,255,255,0.02)', opacity: userRole === 'viewer' ? 0.4 : 1 }}
                 >
                   🃏 Humor
                 </button>
@@ -782,23 +1038,24 @@ export default function App() {
             <div className="form-group" style={{ marginTop: '1.8rem' }}>
               <label class="form-label">Attach Media</label>
               <div 
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                onClick={triggerFileSelect}
+                onDragOver={userRole === 'viewer' ? undefined : handleDragOver}
+                onDrop={userRole === 'viewer' ? undefined : handleDrop}
+                onClick={userRole === 'viewer' ? undefined : triggerFileSelect}
                 style={{
                   border: '2px dashed var(--panel-border)',
                   borderRadius: '14px',
                   padding: '2rem 1rem',
                   textAlign: 'center',
                   background: 'rgba(255,255,255,0.01)',
-                  cursor: 'pointer',
-                  transition: 'all 0.25s ease'
+                  cursor: userRole === 'viewer' ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.25s ease',
+                  opacity: userRole === 'viewer' ? 0.5 : 1
                 }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--text-muted)'}
-                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--panel-border)'}
+                onMouseEnter={e => { if (userRole !== 'viewer') e.currentTarget.style.borderColor = 'var(--text-muted)'; }}
+                onMouseLeave={e => { if (userRole !== 'viewer') e.currentTarget.style.borderColor = 'var(--panel-border)'; }}
               >
                 <ImageIcon size={32} style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }} />
-                <div style={{ fontSize: '0.9rem', fontWeight: 600 }}>Drag files or click to upload</div>
+                <div style={{ fontSize: '0.9rem', fontWeight: 600 }}>{userRole === 'viewer' ? 'Media Uploads Disabled (Read-Only Mode)' : 'Drag files or click to upload'}</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Supports JPG, PNG, WEBP, MP4</div>
                 <input 
                   type="file" 
@@ -915,15 +1172,16 @@ export default function App() {
             <button 
               type="submit" 
               className="btn-generate"
-              disabled={!isFormValid()}
+              disabled={!isFormValid() || userRole === 'viewer'}
               style={{
-                background: isFormValid() ? 'linear-gradient(135deg, var(--primary-neon), var(--secondary-neon))' : 'rgba(255,255,255,0.04)',
-                boxShadow: isFormValid() ? '0 8px 24px rgba(255, 20, 147, 0.35)' : 'none',
-                marginTop: '1rem'
+                background: (isFormValid() && userRole !== 'viewer') ? 'linear-gradient(135deg, var(--primary-neon), var(--secondary-neon))' : 'rgba(255,255,255,0.04)',
+                boxShadow: (isFormValid() && userRole !== 'viewer') ? '0 8px 24px rgba(255, 20, 147, 0.35)' : 'none',
+                marginTop: '1rem',
+                cursor: userRole === 'viewer' ? 'not-allowed' : 'pointer'
               }}
             >
               <Send size={18} />
-              {isScheduled ? 'Schedule Outbound Post' : 'Publish to Selected Channels'}
+              {userRole === 'viewer' ? 'Publish Blocked (Read-Only Viewer)' : (isScheduled ? 'Schedule Outbound Post' : 'Publish to Selected Channels')}
             </button>
 
           </form>
