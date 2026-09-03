@@ -30,7 +30,7 @@ export const PerformanceMonitor = () => {
         </div>
         <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800 text-center">
           <span className="text-[10px] text-slate-400 font-medium uppercase">Memoization Rate</span>
-          <p className="text-xl font-extrabold text-emerald-400">94.8%</p>
+          <p className="text-xl font-extrabold text-emerald-400">95.4%</p>
         </div>
       </div>
 

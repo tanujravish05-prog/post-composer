@@ -11,12 +11,7 @@ export const StatsHeader = () => {
     const published = posts.filter((p) => p.status === 'published').length;
     const drafts = posts.filter((p) => p.status === 'draft').length;
 
-    const platformsMap = posts.reduce((acc, p) => {
-      acc[p.platform] = (acc[p.platform] || 0) + 1;
-      return acc;
-    }, {});
-
-    return { total, scheduled, published, drafts, platformsMap };
+    return { total, scheduled, published, drafts };
   }, [posts]);
 
   return (

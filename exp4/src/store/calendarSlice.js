@@ -5,11 +5,17 @@ const initialState = {
   selectedDate: format(new Date(), 'yyyy-MM-dd'),
   viewMode: 'month', // 'month' | 'week' | 'day'
   selectedPlatform: 'all',
-  selectedStatus: 'all', // 'all' | 'scheduled' | 'published' | 'draft'
+  selectedStatus: 'all',
   searchQuery: '',
-  theme: 'light',
-  activeNavTab: 'calendar', // 'calendar' | 'analytics'
+  theme: 'dark',
+  activeNavTab: 'calendar',
+  isPerformanceOverlayOpen: false,
   toasts: [],
+  renderTelemetry: {
+    totalRenders: 0,
+    lastRenderTimeMs: 0,
+    memoHits: 0
+  }
 };
 
 const calendarSlice = createSlice({
@@ -37,6 +43,9 @@ const calendarSlice = createSlice({
     toggleTheme: (state) => {
       state.theme = state.theme === 'dark' ? 'light' : 'dark';
     },
+    togglePerformanceOverlay: (state) => {
+      state.isPerformanceOverlayOpen = !state.isPerformanceOverlayOpen;
+    },
     addToast: (state, action) => {
       const toast = {
         id: `toast-${Date.now()}`,
@@ -63,6 +72,7 @@ export const {
   setSearchQuery, 
   setActiveNavTab,
   toggleTheme, 
+  togglePerformanceOverlay,
   addToast,
   removeToast
 } = calendarSlice.actions;

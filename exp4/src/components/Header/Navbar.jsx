@@ -70,18 +70,20 @@ export const Navbar = ({ onOpenCreateModal }) => {
   return (
     <header className="flex flex-col gap-4 mb-6">
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 glass-panel rounded-2xl border border-slate-700/60 shadow-lg">
+        {/* Brand Logo & Title */}
         <div className="flex items-center gap-3">
           <div className="p-2.5 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl text-white shadow-md shadow-indigo-500/20">
             <CalendarIcon className="w-6 h-6" />
           </div>
           <div>
             <h1 className="text-lg font-extrabold tracking-tight text-white flex items-center gap-2">
-              PostPulse <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">EXP4</span>
+              PostPulse <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">NextGen</span>
             </h1>
             <p className="text-xs text-slate-400">Interactive Social Media Scheduler</p>
           </div>
         </div>
 
+        {/* Date Navigator */}
         <div className="flex items-center gap-2 bg-slate-900/60 p-1.5 rounded-xl border border-slate-700/50">
           <button
             onClick={() => handleNavigate('prev')}
@@ -111,6 +113,7 @@ export const Navbar = ({ onOpenCreateModal }) => {
           </span>
         </div>
 
+        {/* Actions Row */}
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center p-1 bg-slate-900/80 rounded-xl border border-slate-700/60">
             {['month', 'week', 'day'].map((mode) => (
@@ -157,11 +160,12 @@ export const Navbar = ({ onOpenCreateModal }) => {
             data-testid="create-post-btn"
           >
             <Plus className="w-4 h-4" />
-            New Post
+            Schedule Post
           </button>
         </div>
       </div>
 
+      {/* Filter & Search Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-3 glass-panel rounded-xl border border-slate-700/40">
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
           {platforms.map((p) => {
@@ -192,7 +196,7 @@ export const Navbar = ({ onOpenCreateModal }) => {
             type="text"
             value={searchQuery}
             onChange={(e) => dispatch(setSearchQuery(e.target.value))}
-            placeholder="Search posts..."
+            placeholder="Search scheduled posts..."
             className="w-full bg-slate-900/80 border border-slate-700/60 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
             data-testid="search-posts-input"
           />

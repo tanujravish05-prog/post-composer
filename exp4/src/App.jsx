@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Sidebar } from './components/Sidebar/Sidebar';
-import { UpcomingPanel } from './components/Sidebar/UpcomingPanel';
-import { PublishingHeader } from './components/Header/PublishingHeader';
+import { Navbar } from './components/Header/Navbar';
+import { StatsHeader } from './components/Analytics/StatsHeader';
 import { CalendarView } from './components/Calendar/CalendarView';
 import { PostModal } from './components/Modals/PostModal';
 import { PostPreviewModal } from './components/Modals/PostPreviewModal';
+import { PerformanceMonitor } from './components/Performance/PerformanceMonitor';
 import { ToastContainer } from './components/Toast/ToastContainer';
 
 export const App = () => {
   const theme = useSelector((state) => state.calendar.theme);
-  const postsCount = useSelector((state) => state.posts.posts.length);
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedPostForEdit, setSelectedPostForEdit] = useState(null);
@@ -40,47 +39,38 @@ export const App = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-100 text-slate-900 selection:bg-indigo-500 selection:text-white">
-      {/* Screenshot Left Sidebar */}
-      <Sidebar />
-
-      {/* Main Workspace Area */}
-      <div className="flex-1 flex gap-6 p-6 min-w-0 max-w-[1600px] mx-auto w-full">
-        {/* Main Center Card: Publishing Schedule */}
-        <main className="flex-1 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm flex flex-col min-w-0">
-          <PublishingHeader 
-            onOpenCreateModal={handleOpenCreateModal} 
-            postsCount={postsCount}
+    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 sm:p-6 lg:p-8 selection:bg-indigo-500 selection:text-white">
+      <div className="max-w-7xl mx-auto">
+        <Navbar onOpenCreateModal={handleOpenCreateModal} />
+        <StatsHeader />
+        <main className="mb-8">
+          <CalendarView
+            onSelectPost={handleSelectPostForEdit}
+            onOpenCreateModal={handleOpenCreateModal}
+            onPreviewPost={handlePreviewPost}
           />
-
-          <div className="flex-1">
-            <CalendarView
-              onSelectPost={handleSelectPostForEdit}
-              onOpenCreateModal={handleOpenCreateModal}
-              onPreviewPost={handlePreviewPost}
-            />
-          </div>
         </main>
+        <footer className="text-center text-xs text-slate-500 py-4 border-t border-slate-800 flex items-center justify-between">
+          <span>PostPulse NextGen Calendar Scheduler</span>
+          <span>CO3 - BT3 | CO4 - BT4 | CO5 - BT5</span>
+        </footer>
 
-        {/* Screenshot Right Panel: Upcoming */}
-        <UpcomingPanel onSelectPost={handleSelectPostForEdit} />
+        <PostModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          initialData={selectedPostForEdit}
+          defaultDate={defaultDate}
+          defaultTime={defaultTime}
+        />
+
+        <PostPreviewModal
+          post={selectedPostForPreview}
+          onClose={() => setSelectedPostForPreview(null)}
+        />
+
+        <PerformanceMonitor />
+        <ToastContainer />
       </div>
-
-      {/* Modals & Toast Notifications */}
-      <PostModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        initialData={selectedPostForEdit}
-        defaultDate={defaultDate}
-        defaultTime={defaultTime}
-      />
-
-      <PostPreviewModal
-        post={selectedPostForPreview}
-        onClose={() => setSelectedPostForPreview(null)}
-      />
-
-      <ToastContainer />
     </div>
   );
 };

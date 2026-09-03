@@ -10,6 +10,7 @@ export const DayView = ({ onSelectPost, onOpenCreateModal, onPreviewPost }) => {
   const selectedDateStr = useSelector((state) => state.calendar.selectedDate);
   const posts = useSelector((state) => state.posts.posts);
   const selectedPlatform = useSelector((state) => state.calendar.selectedPlatform);
+  const selectedStatus = useSelector((state) => state.calendar.selectedStatus);
   const searchQuery = useSelector((state) => state.calendar.searchQuery);
 
   const hoursList = useMemo(() => getHoursList(), []);
@@ -18,6 +19,7 @@ export const DayView = ({ onSelectPost, onOpenCreateModal, onPreviewPost }) => {
     return posts.filter((post) => {
       if (post.scheduledDate !== selectedDateStr) return false;
       if (selectedPlatform !== 'all' && post.platform !== selectedPlatform) return false;
+      if (selectedStatus !== 'all' && post.status !== selectedStatus) return false;
       if (
         searchQuery &&
         !post.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
@@ -27,7 +29,7 @@ export const DayView = ({ onSelectPost, onOpenCreateModal, onPreviewPost }) => {
       }
       return true;
     });
-  }, [posts, selectedDateStr, selectedPlatform, searchQuery]);
+  }, [posts, selectedDateStr, selectedPlatform, selectedStatus, searchQuery]);
 
   const postsByHour = useMemo(() => {
     const map = {};

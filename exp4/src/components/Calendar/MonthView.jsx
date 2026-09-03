@@ -46,20 +46,30 @@ const DayCellComponent = ({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className={`calendar-day-cell min-h-[125px] p-2 flex flex-col justify-between relative group ${
-        !day.isCurrentMonth ? 'other-month' : ''
-      }`}
+      className={`calendar-day-cell min-h-[130px] p-2 flex flex-col justify-between border-b border-r border-slate-700/40 relative group ${
+        !day.isCurrentMonth ? 'other-month opacity-40 bg-slate-900/40' : ''
+      } ${day.isToday ? 'today bg-indigo-950/20' : ''}`}
       data-testid={`month-cell-${day.dateString}`}
     >
-      <div className="flex items-center justify-end mb-1">
-        <span className={`text-xs font-extrabold ${
-          day.isToday ? 'bg-indigo-600 text-white w-6 h-6 rounded-full flex items-center justify-center' : 'text-slate-700'
+      <div className="flex items-center justify-between mb-1">
+        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+          day.isToday 
+            ? 'bg-indigo-600 text-white shadow-sm font-bold' 
+            : 'text-slate-400 group-hover:text-slate-200'
         }`}>
           {day.dayNumber}
         </span>
+
+        <button
+          onClick={() => onOpenCreateModal(day.dateString)}
+          className="opacity-0 group-hover:opacity-100 p-1 hover:bg-slate-700/60 rounded text-slate-300 transition-opacity"
+          title="Add Post to this Date"
+        >
+          <Plus className="w-3.5 h-3.5" />
+        </button>
       </div>
 
-      <div className="flex-1 flex flex-col gap-1.5 overflow-y-auto max-h-[105px]">
+      <div className="flex-1 flex flex-col gap-1.5 overflow-y-auto max-h-[100px] pr-0.5">
         {posts.map((post) => (
           <PostCard
             key={post.id}
@@ -70,13 +80,11 @@ const DayCellComponent = ({
         ))}
       </div>
 
-      <button
-        onClick={() => onOpenCreateModal(day.dateString)}
-        className="opacity-0 group-hover:opacity-100 absolute top-2 left-2 p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-700 transition-opacity"
-        title="Add post on this date"
-      >
-        <Plus className="w-3.5 h-3.5" />
-      </button>
+      {posts.length > 3 && (
+        <span className="text-[10px] text-indigo-400 font-semibold mt-1">
+          +{posts.length - 3} more posts
+        </span>
+      )}
     </div>
   );
 };
@@ -132,19 +140,17 @@ export const MonthView = ({ onSelectPost, onOpenCreateModal }) => {
     }));
   }, [dispatch]);
 
-  const weekDayHeaders = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  const weekDayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="flex flex-col w-full rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm">
-      {/* Header matching screenshot SUN, MON, TUE, WED, THU, FRI, SAT */}
-      <div className="grid grid-cols-7 border-b border-slate-200 bg-white text-center py-2.5 font-bold text-xs text-slate-400 tracking-wider">
+    <div className="flex flex-col w-full rounded-2xl overflow-hidden glass-panel border border-slate-700/60 shadow-xl">
+      <div className="grid grid-cols-7 bg-slate-900/90 border-b border-slate-700/60 text-center py-3 font-semibold text-xs text-slate-400 tracking-wider uppercase">
         {weekDayHeaders.map((day) => (
           <div key={day}>{day}</div>
         ))}
       </div>
 
-      {/* 35/42 Grid */}
-      <div className="grid grid-cols-7 auto-rows-fr bg-white">
+      <div className="grid grid-cols-7 auto-rows-fr bg-slate-900/40">
         {monthGrid.map((day) => (
           <MemoizedDayCell
             key={day.dateString}

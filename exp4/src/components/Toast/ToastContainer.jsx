@@ -14,7 +14,7 @@ export const ToastContainer = () => {
       {toasts.map((toast) => (
         <div
           key={toast.id}
-          className="pointer-events-auto glass-panel p-3.5 rounded-xl border border-slate-700 shadow-2xl bg-slate-900/95 flex items-start gap-3 animate-fade-in"
+          className="pointer-events-auto glass-panel p-3.5 rounded-xl border border-slate-700 shadow-2xl bg-slate-900/95 flex items-start gap-3 animate-fade-in text-slate-100"
         >
           <div className="pt-0.5">
             {toast.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-400" />}

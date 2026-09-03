@@ -17,8 +17,8 @@ const createMockStore = (customState = {}) => {
   });
 };
 
-describe('Screenshot Layout Testing: PostPulse Calendar (CO3/CO5)', () => {
-  it('renders application brand title Publishing Schedule and navigation controls', () => {
+describe('PostPulse NextGen Integration Testing (CO3/CO5)', () => {
+  it('renders application brand title and navigation controls', () => {
     const store = createMockStore();
     render(
       <Provider store={store}>
@@ -26,7 +26,7 @@ describe('Screenshot Layout Testing: PostPulse Calendar (CO3/CO5)', () => {
       </Provider>
     );
 
-    expect(screen.getByText(/Publishing Schedule/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/PostPulse/i).length).toBeGreaterThan(0);
     expect(screen.getByTestId('create-post-btn')).toBeInTheDocument();
     expect(screen.getByTestId('search-posts-input')).toBeInTheDocument();
   });
@@ -48,7 +48,7 @@ describe('Screenshot Layout Testing: PostPulse Calendar (CO3/CO5)', () => {
     expect(store.getState().calendar.viewMode).toBe('day');
   });
 
-  it('filters posts by status dropdown selector', () => {
+  it('filters posts by social platform filter pill', () => {
     const store = createMockStore();
     render(
       <Provider store={store}>
@@ -56,9 +56,9 @@ describe('Screenshot Layout Testing: PostPulse Calendar (CO3/CO5)', () => {
       </Provider>
     );
 
-    const statusSelect = screen.getByTestId('status-filter-select');
-    fireEvent.change(statusSelect, { target: { value: 'scheduled' } });
-    expect(store.getState().calendar.selectedStatus).toBe('scheduled');
+    const twitterFilter = screen.getByTestId('platform-filter-twitter');
+    fireEvent.click(twitterFilter);
+    expect(store.getState().calendar.selectedPlatform).toBe('twitter');
   });
 
   it('opens and closes the schedule new post modal', () => {
@@ -74,5 +74,20 @@ describe('Screenshot Layout Testing: PostPulse Calendar (CO3/CO5)', () => {
 
     expect(screen.getByTestId('post-modal')).toBeInTheDocument();
     expect(screen.getByTestId('input-title')).toBeInTheDocument();
+  });
+
+  it('toggles CO4 performance monitor panel overlay', () => {
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <App />
+      </Provider>
+    );
+
+    const perfBtn = screen.getByTestId('perf-toggle-btn');
+    fireEvent.click(perfBtn);
+
+    expect(screen.getByTestId('performance-monitor')).toBeInTheDocument();
+    expect(screen.getByText(/CO4\/CO5 Performance Telemetry/i)).toBeInTheDocument();
   });
 });
