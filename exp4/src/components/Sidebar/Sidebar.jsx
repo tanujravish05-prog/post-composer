@@ -89,13 +89,13 @@ export const Sidebar = () => {
         </div>
       </div>
 
-      {/* Bottom Profile Section matching screenshot */}
+      {/* Bottom Profile Section: Tanuj */}
       <div className="pt-4 border-t border-slate-100 flex items-center gap-3">
         <div className="w-10 h-10 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-sm">
-          SK
+          TR
         </div>
         <div>
-          <h4 className="text-sm font-extrabold text-slate-900 leading-tight">Sukhraj</h4>
+          <h4 className="text-sm font-extrabold text-slate-900 leading-tight">Tanuj</h4>
           <p className="text-xs text-slate-400 font-medium">Content Manager</p>
         </div>
       </div>
