@@ -1,95 +1,85 @@
-import { format, addDays, subDays } from 'date-fns';
-
-const today = new Date();
-const todayStr = format(today, 'yyyy-MM-dd');
-const yesterdayStr = format(subDays(today, 1), 'yyyy-MM-dd');
-const tomorrowStr = format(addDays(today, 1), 'yyyy-MM-dd');
-const inThreeDaysStr = format(addDays(today, 3), 'yyyy-MM-dd');
-const inFiveDaysStr = format(addDays(today, 5), 'yyyy-MM-dd');
-const nextWeekStr = format(addDays(today, 7), 'yyyy-MM-dd');
-
 export const INITIAL_POSTS = [
   {
     id: 'post-1',
-    title: '🚀 Launch Announcement: NextGen React AI Tools',
-    content: 'We are thrilled to reveal our brand new developer productivity suite powered by cutting-edge state management & UI virtualization! #ReactJS #WebDev #AI',
-    platform: 'twitter',
-    scheduledDate: todayStr,
+    title: 'Add CS teacher on linkedin',
+    content: 'Connecting with computer science educators to expand our technical advisory network and mentorship program.',
+    platform: 'linkedin',
+    scheduledDate: '2026-09-10',
     scheduledTime: '10:00',
     status: 'scheduled',
-    tags: ['Launch', 'React', 'DevTools'],
-    mediaUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
-    engagementEstimate: '850+ engagements'
+    tags: ['Education', 'Networking', 'CS'],
+    mediaUrl: null,
+    engagementEstimate: '340 impressions'
   },
   {
     id: 'post-2',
-    title: '📸 Behind The Scenes: Engineering Team Sync',
-    content: 'Deep dive into optimizing rendering cycles with React.memo and Redux Toolkit slices! Slide to see our design system blueprints 🎨',
+    title: 'POST vac photos',
+    content: 'Highlights from our annual team retreat! Swipe to see the engineering team scaling mountains 🏔️✨',
     platform: 'instagram',
-    scheduledDate: todayStr,
-    scheduledTime: '14:30',
+    scheduledDate: '2026-09-04',
+    scheduledTime: '16:30',
     status: 'scheduled',
-    tags: ['TeamCulture', 'Engineering', 'UIUX'],
+    tags: ['Vacation', 'TeamRetreat', 'LifeAtCompany'],
     mediaUrl: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&auto=format&fit=crop&q=80',
     engagementEstimate: '1.2k likes'
   },
   {
     id: 'post-3',
-    title: '💼 How Memoization Reduces UI Latency by 40%',
-    content: 'In complex dashboard interfaces like calendar schedulers, unnecessary re-renders degrade user experience. Read our technical breakdown on using useMemo & useCallback effectively.',
-    platform: 'linkedin',
-    scheduledDate: yesterdayStr,
-    scheduledTime: '11:00',
+    title: 'JOURNALING for mental clarity',
+    content: '5 morning journaling prompts that top engineering leaders use to focus before writing code.',
+    platform: 'instagram',
+    scheduledDate: '2026-09-10',
+    scheduledTime: '05:00',
     status: 'published',
-    tags: ['Performance', 'SoftwareEngineering', 'WebPerf'],
-    mediaUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=80',
-    engagementEstimate: '340 impressions'
+    tags: ['Journaling', 'Mindset', 'Productivity'],
+    mediaUrl: null,
+    engagementEstimate: '850 likes'
   },
   {
     id: 'post-4',
-    title: '🎥 Masterclass: Building Redux Toolkit State Trees',
-    content: 'New video alert! Learn how to map temporal data directly into temporal grid layouts with drag-and-drop actions.',
-    platform: 'youtube',
-    scheduledDate: tomorrowStr,
-    scheduledTime: '16:00',
+    title: 'Weekly Developer Sync Notes',
+    content: 'Highlights from today’s frontend engineering sync: state isolation, virtualized calendar grids, and memoization benchmark results.',
+    platform: 'twitter',
+    scheduledDate: '2026-09-15',
+    scheduledTime: '14:00',
     status: 'scheduled',
-    tags: ['Tutorial', 'Redux', 'Frontend'],
-    mediaUrl: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&auto=format&fit=crop&q=80',
-    engagementEstimate: '3.5k views'
+    tags: ['ReactJS', 'WebPerf'],
+    mediaUrl: null,
+    engagementEstimate: '520 retweets'
   },
   {
     id: 'post-5',
-    title: '💡 Weekly UX Tip: Visualizing Time-Based Data',
-    content: 'When designing calendar schedulers, visual hierarchy matters. Color-coded platform badges improve scannability by 60%.',
+    title: 'Facebook Campaign Launch',
+    content: 'Introducing our new social scheduler tools designed to streamline cross-platform content distribution.',
     platform: 'facebook',
-    scheduledDate: inThreeDaysStr,
-    scheduledTime: '09:15',
+    scheduledDate: '2026-09-18',
+    scheduledTime: '11:30',
     status: 'draft',
-    tags: ['UXDesign', 'Tips', 'ContentStrategy'],
+    tags: ['Marketing', 'Facebook'],
     mediaUrl: null,
     engagementEstimate: 'Draft'
   },
   {
     id: 'post-6',
-    title: '🧵 Thread: 5 Lessons from CO4 Performance Engineering',
-    content: '1/5 Profiling React components with devtools... 2/5 Isolating local state mutations... 3/5 Memoizing drag targets!',
-    platform: 'threads',
-    scheduledDate: inFiveDaysStr,
-    scheduledTime: '18:45',
+    title: 'Engineering Team Update',
+    content: 'Excited to announce our Q4 technical roadmap focused on high-throughput temporal data visualization!',
+    platform: 'linkedin',
+    scheduledDate: '2026-09-22',
+    scheduledTime: '09:00',
     status: 'scheduled',
-    tags: ['TechThread', 'Performance'],
+    tags: ['Leadership', 'TechRoadmap'],
     mediaUrl: null,
-    engagementEstimate: '500+ retweets'
+    engagementEstimate: '410 impressions'
   },
   {
     id: 'post-7',
-    title: '📊 Q3 Content Planning Strategy Session',
-    content: 'Preparing our cross-channel distribution schedule for upcoming feature drops across X, LinkedIn, and YouTube.',
-    platform: 'linkedin',
-    scheduledDate: nextWeekStr,
-    scheduledTime: '13:00',
+    title: 'Product Feature Teaser',
+    content: 'Something big is coming to calendar scheduling next week... stay tuned! 🚀',
+    platform: 'twitter',
+    scheduledDate: '2026-09-28',
+    scheduledTime: '15:00',
     status: 'draft',
-    tags: ['Strategy', 'Planning'],
+    tags: ['Teaser', 'ProductUpdate'],
     mediaUrl: null,
     engagementEstimate: 'Draft'
   }

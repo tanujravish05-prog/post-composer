@@ -5,9 +5,9 @@ const initialState = {
   selectedDate: format(new Date(), 'yyyy-MM-dd'),
   viewMode: 'month', // 'month' | 'week' | 'day'
   selectedPlatform: 'all',
+  selectedStatus: 'all', // 'all' | 'scheduled' | 'published' | 'draft'
   searchQuery: '',
-  theme: 'dark',
-  activeNavTab: 'calendar', // 'calendar' | 'queue' | 'analytics' | 'settings'
+  theme: 'light',
   toasts: [],
 };
 
@@ -24,11 +24,11 @@ const calendarSlice = createSlice({
     setSelectedPlatform: (state, action) => {
       state.selectedPlatform = action.payload;
     },
+    setSelectedStatus: (state, action) => {
+      state.selectedStatus = action.payload;
+    },
     setSearchQuery: (state, action) => {
       state.searchQuery = action.payload;
-    },
-    setActiveNavTab: (state, action) => {
-      state.activeNavTab = action.payload;
     },
     toggleTheme: (state) => {
       state.theme = state.theme === 'dark' ? 'light' : 'dark';
@@ -36,7 +36,7 @@ const calendarSlice = createSlice({
     addToast: (state, action) => {
       const toast = {
         id: `toast-${Date.now()}`,
-        type: action.payload.type || 'info', // 'info' | 'success' | 'warning' | 'danger'
+        type: action.payload.type || 'info',
         title: action.payload.title,
         message: action.payload.message,
       };
@@ -55,8 +55,8 @@ export const {
   setSelectedDate, 
   setViewMode, 
   setSelectedPlatform, 
+  setSelectedStatus,
   setSearchQuery, 
-  setActiveNavTab,
   toggleTheme, 
   addToast,
   removeToast

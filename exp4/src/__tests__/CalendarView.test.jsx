@@ -17,8 +17,8 @@ const createMockStore = (customState = {}) => {
   });
 };
 
-describe('Production UI & Integration Testing: PostPulse Pro', () => {
-  it('renders application brand title and navigation controls', () => {
+describe('Screenshot Layout Testing: PostPulse Calendar (CO3/CO5)', () => {
+  it('renders application brand title Publishing Schedule and navigation controls', () => {
     const store = createMockStore();
     render(
       <Provider store={store}>
@@ -26,7 +26,7 @@ describe('Production UI & Integration Testing: PostPulse Pro', () => {
       </Provider>
     );
 
-    expect(screen.getAllByText(/PostPulse/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Publishing Schedule/i)).toBeInTheDocument();
     expect(screen.getByTestId('create-post-btn')).toBeInTheDocument();
     expect(screen.getByTestId('search-posts-input')).toBeInTheDocument();
   });
@@ -48,7 +48,7 @@ describe('Production UI & Integration Testing: PostPulse Pro', () => {
     expect(store.getState().calendar.viewMode).toBe('day');
   });
 
-  it('filters posts by social platform filter pill', () => {
+  it('filters posts by status dropdown selector', () => {
     const store = createMockStore();
     render(
       <Provider store={store}>
@@ -56,9 +56,9 @@ describe('Production UI & Integration Testing: PostPulse Pro', () => {
       </Provider>
     );
 
-    const twitterFilter = screen.getByTestId('platform-filter-twitter');
-    fireEvent.click(twitterFilter);
-    expect(store.getState().calendar.selectedPlatform).toBe('twitter');
+    const statusSelect = screen.getByTestId('status-filter-select');
+    fireEvent.change(statusSelect, { target: { value: 'scheduled' } });
+    expect(store.getState().calendar.selectedStatus).toBe('scheduled');
   });
 
   it('opens and closes the schedule new post modal', () => {
