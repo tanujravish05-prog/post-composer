@@ -1,8 +1,8 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import postsReducer from '../store/postsSlice';
 import calendarReducer from '../store/calendarSlice';
 import { App } from '../App';
@@ -16,13 +16,8 @@ const createMockStore = () => {
   });
 };
 
-describe('Integrated App Testing (Exp 3 Auth + Exp 4 Calendar Scheduler)', () => {
-  beforeEach(() => {
-    localStorage.clear();
-    sessionStorage.clear();
-  });
-
-  it('renders login page by default for unauthenticated users', async () => {
+describe('Pure Exp 4 Interactive Calendar Scheduler Testing (CO3/CO5)', () => {
+  it('renders application brand header and navigation controls directly', () => {
     const store = createMockStore();
     render(
       <Provider store={store}>
@@ -30,14 +25,12 @@ describe('Integrated App Testing (Exp 3 Auth + Exp 4 Calendar Scheduler)', () =>
       </Provider>
     );
 
-    await waitFor(() => {
-      expect(screen.getByText(/PostPulse Suite/i)).toBeInTheDocument();
-      expect(screen.getByTestId('input-username')).toBeInTheDocument();
-      expect(screen.getByTestId('login-submit-btn')).toBeInTheDocument();
-    });
+    expect(screen.getAllByText(/PostPulse/i).length).toBeGreaterThan(0);
+    expect(screen.getByTestId('create-post-btn')).toBeInTheDocument();
+    expect(screen.getByTestId('search-posts-input')).toBeInTheDocument();
   });
 
-  it('allows quick-login as Admin and displays main Dashboard', async () => {
+  it('switches calendar views between Month, Week, and Day modes', () => {
     const store = createMockStore();
     render(
       <Provider store={store}>
@@ -45,17 +38,16 @@ describe('Integrated App Testing (Exp 3 Auth + Exp 4 Calendar Scheduler)', () =>
       </Provider>
     );
 
-    const adminBtn = await screen.findByTestId('quick-login-admin');
-    fireEvent.click(adminBtn);
+    const weekBtn = screen.getByTestId('view-mode-week');
+    fireEvent.click(weekBtn);
+    expect(store.getState().calendar.viewMode).toBe('week');
 
-    await waitFor(() => {
-      expect(screen.getAllByText(/PostPulse/i).length).toBeGreaterThan(0);
-      expect(screen.getByTestId('create-post-btn')).toBeInTheDocument();
-      expect(screen.getByTestId('search-posts-input')).toBeInTheDocument();
-    });
+    const dayBtn = screen.getByTestId('view-mode-day');
+    fireEvent.click(dayBtn);
+    expect(store.getState().calendar.viewMode).toBe('day');
   });
 
-  it('allows quick-login as Editor and navigates calendar views', async () => {
+  it('filters posts by social platform filter pill', () => {
     const store = createMockStore();
     render(
       <Provider store={store}>
@@ -63,17 +55,12 @@ describe('Integrated App Testing (Exp 3 Auth + Exp 4 Calendar Scheduler)', () =>
       </Provider>
     );
 
-    const editorBtn = await screen.findByTestId('quick-login-editor');
-    fireEvent.click(editorBtn);
-
-    await waitFor(() => {
-      const weekBtn = screen.getByTestId('view-mode-week');
-      fireEvent.click(weekBtn);
-      expect(store.getState().calendar.viewMode).toBe('week');
-    });
+    const twitterFilter = screen.getByTestId('platform-filter-twitter');
+    fireEvent.click(twitterFilter);
+    expect(store.getState().calendar.selectedPlatform).toBe('twitter');
   });
 
-  it('filters posts by platform and opens schedule modal', async () => {
+  it('opens and closes the schedule new post modal', () => {
     const store = createMockStore();
     render(
       <Provider store={store}>
@@ -81,17 +68,25 @@ describe('Integrated App Testing (Exp 3 Auth + Exp 4 Calendar Scheduler)', () =>
       </Provider>
     );
 
-    const adminBtn = await screen.findByTestId('quick-login-admin');
-    fireEvent.click(adminBtn);
+    const createBtn = screen.getByTestId('create-post-btn');
+    fireEvent.click(createBtn);
 
-    await waitFor(() => {
-      const twitterFilter = screen.getByTestId('platform-filter-twitter');
-      fireEvent.click(twitterFilter);
-      expect(store.getState().calendar.selectedPlatform).toBe('twitter');
+    expect(screen.getByTestId('post-modal')).toBeInTheDocument();
+    expect(screen.getByTestId('input-title')).toBeInTheDocument();
+  });
 
-      const createBtn = screen.getByTestId('create-post-btn');
-      fireEvent.click(createBtn);
-      expect(screen.getByTestId('post-modal')).toBeInTheDocument();
-    });
+  it('toggles CO4 performance monitor panel overlay', () => {
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <App />
+      </Provider>
+    );
+
+    const perfBtn = screen.getByTestId('perf-toggle-btn');
+    fireEvent.click(perfBtn);
+
+    expect(screen.getByTestId('performance-monitor')).toBeInTheDocument();
+    expect(screen.getByText(/CO4\/CO5 Performance Telemetry/i)).toBeInTheDocument();
   });
 });

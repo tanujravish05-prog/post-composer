@@ -1,58 +1,86 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import Login from './components/Login';
-import Dashboard from './components/Dashboard';
-import AdminPanel from './components/AdminPanel';
-import EditorSpace from './components/EditorSpace';
-import Unauthorized from './components/Unauthorized';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Navbar } from './components/Header/Navbar';
+import { StatsHeader } from './components/Analytics/StatsHeader';
+import { CalendarView } from './components/Calendar/CalendarView';
+import { PostModal } from './components/Modals/PostModal';
+import { PostPreviewModal } from './components/Modals/PostPreviewModal';
+import { PerformanceMonitor } from './components/Performance/PerformanceMonitor';
+import { ToastContainer } from './components/Toast/ToastContainer';
 
-export function App() {
+export const App = () => {
+  const theme = useSelector((state) => state.calendar.theme);
+
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedPostForEdit, setSelectedPostForEdit] = useState(null);
+  const [selectedPostForPreview, setSelectedPostForPreview] = useState(null);
+
+  const [defaultDate, setDefaultDate] = useState(null);
+  const [defaultTime, setDefaultTime] = useState(null);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const handleOpenCreateModal = (dateStr = null, timeStr = null) => {
+    setSelectedPostForEdit(null);
+    setDefaultDate(dateStr);
+    setDefaultTime(timeStr);
+    setIsCreateModalOpen(true);
+  };
+
+  const handleSelectPostForEdit = (post) => {
+    setSelectedPostForEdit(post);
+    setIsCreateModalOpen(true);
+  };
+
+  const handlePreviewPost = (post) => {
+    setSelectedPostForPreview(post);
+  };
+
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          {/* Public Authentication Route */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/unauthorized" element={<Unauthorized />} />
+    <div className="min-h-screen bg-white text-zinc-900 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Navigation Toolbar */}
+        <Navbar onOpenCreateModal={handleOpenCreateModal} />
 
-          {/* Protected Routes (Authentication Required) */}
-          <Route 
-            path="/dashboard" 
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } 
-          />
+        {/* KPI Analytics Stats */}
+        <StatsHeader />
 
-          {/* Role-Restricted Admin Route */}
-          <Route 
-            path="/admin-panel" 
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <AdminPanel />
-              </ProtectedRoute>
-            } 
+        {/* Master Interactive Calendar Views */}
+        <main className="mb-8">
+          <CalendarView
+            onSelectPost={handleSelectPostForEdit}
+            onOpenCreateModal={handleOpenCreateModal}
+            onPreviewPost={handlePreviewPost}
           />
-          
-          {/* Role-Restricted Editor Route */}
-          <Route 
-            path="/editor-space" 
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'editor']}>
-                <EditorSpace />
-              </ProtectedRoute>
-            } 
-          />
+        </main>
 
-          {/* Default Fallback Routing */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
+        {/* Footer */}
+        <footer className="text-center text-xs text-zinc-500 py-4 border-t border-zinc-200 flex items-center justify-between">
+          <span>PostPulse Interactive Social Scheduler (Exp 2 Look + Exp 4 Features & Redux)</span>
+          <span>CO3 - BT3 | CO4 - BT4 | CO5 - BT5</span>
+        </footer>
+
+        {/* Modals & Telemetry Overlays */}
+        <PostModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          initialData={selectedPostForEdit}
+          defaultDate={defaultDate}
+          defaultTime={defaultTime}
+        />
+
+        <PostPreviewModal
+          post={selectedPostForPreview}
+          onClose={() => setSelectedPostForPreview(null)}
+        />
+
+        <PerformanceMonitor />
+        <ToastContainer />
+      </div>
+    </div>
   );
-}
+};
 
 export default App;
