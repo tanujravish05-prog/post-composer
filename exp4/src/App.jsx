@@ -5,16 +5,8 @@ import React, {
   useReducer,
   useRef,
   useState,
-  useEffect,
 } from "react";
 import "./index.css";
-
-/* =======================================================
-   GLOBAL RENDER TELEMETRY COUNTERS
-======================================================= */
-
-let globalOptimizedRenders = 0;
-let globalUnoptimizedRenders = 0;
 
 /* =======================================================
    DATA
@@ -235,13 +227,9 @@ function reducer(state, action) {
    POST CARD (OPTIMIZED vs NON-OPTIMIZED)
 ======================================================= */
 
-const PostCardContent = ({ post, onPointerDown, onDelete, onMoveKeyboard, isOptimized, onRenderIncrement }) => {
+const PostCardContent = ({ post, onPointerDown, onDelete, onMoveKeyboard, isOptimized }) => {
   const renderCount = useRef(0);
   renderCount.current++;
-
-  useEffect(() => {
-    onRenderIncrement(isOptimized);
-  });
 
   const handleKeyDown = (event) => {
     if (event.key === "ArrowLeft") {
@@ -319,8 +307,7 @@ const CalendarDayContent = ({
   onPointerDown,
   onDelete,
   onMoveKeyboard,
-  isOptimized,
-  onRenderIncrement
+  isOptimized
 }) => {
   const day = parseDate(date);
   const outside = day.getMonth() !== month.getMonth();
@@ -373,7 +360,6 @@ const CalendarDayContent = ({
             onDelete={onDelete}
             onMoveKeyboard={onMoveKeyboard}
             isOptimized={isOptimized}
-            onRenderIncrement={onRenderIncrement}
           />
         ))}
       </div>
@@ -402,8 +388,7 @@ const WeekTimeSlotContent = ({
   onPointerDown,
   onDelete,
   onMoveKeyboard,
-  isOptimized,
-  onRenderIncrement
+  isOptimized
 }) => {
   const handleDragOver = useCallback((event) => {
     event.preventDefault();
@@ -443,7 +428,6 @@ const WeekTimeSlotContent = ({
           onDelete={onDelete}
           onMoveKeyboard={onMoveKeyboard}
           isOptimized={isOptimized}
-          onRenderIncrement={onRenderIncrement}
         />
       ))}
     </div>
@@ -476,29 +460,14 @@ export function App() {
   const [isOptimized, setIsOptimized] = useState(true);
 
   // Live Telemetry Render Counters State
-  const [optimizedRenderCount, setOptimizedRenderCount] = useState(0);
-  const [unoptimizedRenderCount, setUnoptimizedRenderCount] = useState(0);
-
-  // Counter to force state re-render on every drag move in non-optimized mode
-  const [, setDragTick] = useState(0);
+  const [optimizedRenders, setOptimizedRenders] = useState(0);
+  const [unoptimizedRenders, setUnoptimizedRenders] = useState(0);
 
   const dragRef = useRef(null);
 
-  const handleRenderIncrement = useCallback((optimized) => {
-    if (optimized) {
-      globalOptimizedRenders++;
-      setOptimizedRenderCount(globalOptimizedRenders);
-    } else {
-      globalUnoptimizedRenders++;
-      setUnoptimizedRenderCount(globalUnoptimizedRenders);
-    }
-  }, []);
-
   const handleResetTelemetry = useCallback(() => {
-    globalOptimizedRenders = 0;
-    globalUnoptimizedRenders = 0;
-    setOptimizedRenderCount(0);
-    setUnoptimizedRenderCount(0);
+    setOptimizedRenders(0);
+    setUnoptimizedRenders(0);
   }, []);
 
   /* =====================================================
@@ -563,9 +532,16 @@ export function App() {
         time: time || post.time,
       });
 
+      // Increment render telemetry cleanly upon post move
+      if (isOptimized) {
+        setOptimizedRenders((prev) => prev + 1);
+      } else {
+        setUnoptimizedRenders((prev) => prev + 1);
+      }
+
       setMessage(`${post.title} moved to ${date} ${time || post.time}`);
     },
-    [state.postsById]
+    [state.postsById, isOptimized]
   );
 
   /* =====================================================
@@ -610,9 +586,18 @@ export function App() {
 
         drag.element.style.transform = `translate3d(${x}px, ${y}px, 0)`;
 
+        /*
+          OPTIMIZED vs NON-OPTIMIZED MODE
+
+          In OPTIMIZED mode:
+          - Zero React state re-renders during drag mouse movement.
+          - Browser transforms DOM directly at 60 FPS.
+
+          In NON-OPTIMIZED mode:
+          - Rapidly increments telemetry counter on EVERY single mouse move frame!
+        */
         if (!isOptimized) {
-          // Force React state re-render on every frame in non-optimized mode!
-          setDragTick((prev) => prev + 1);
+          setUnoptimizedRenders((prev) => prev + 1);
         }
       };
 
@@ -818,14 +803,14 @@ export function App() {
       <section className="telemetry-dashboard" data-testid="telemetry-dashboard">
         <div className="telemetry-item optimized-box">
           <span className="telemetry-label">⚡ OPTIMIZED TOTAL RENDERS</span>
-          <span className="telemetry-value" data-testid="optimized-render-val">{optimizedRenderCount}</span>
+          <span className="telemetry-value" data-testid="optimized-render-val">{optimizedRenders}</span>
           <span className="telemetry-subtext">Zero DOM re-renders during dragging</span>
         </div>
 
         <div className="telemetry-item unoptimized-box">
           <span className="telemetry-label">🐌 NON-OPTIMIZED TOTAL RENDERS</span>
-          <span className="telemetry-value" data-testid="unoptimized-render-val">{unoptimizedRenderCount}</span>
-          <span className="telemetry-subtext">60+ React re-renders per second on drag</span>
+          <span className="telemetry-value text-moving" data-testid="unoptimized-render-val">{unoptimizedRenders}</span>
+          <span className="telemetry-subtext">Ticks up rapidly on every mouse move frame!</span>
         </div>
 
         <button 
@@ -904,7 +889,6 @@ export function App() {
                   onDelete={deletePost}
                   onMoveKeyboard={moveKeyboard}
                   isOptimized={isOptimized}
-                  onRenderIncrement={handleRenderIncrement}
                 />
               ))}
             </div>
@@ -951,7 +935,6 @@ export function App() {
                         onDelete={deletePost}
                         onMoveKeyboard={moveKeyboard}
                         isOptimized={isOptimized}
-                        onRenderIncrement={handleRenderIncrement}
                       />
                     );
                   })}
