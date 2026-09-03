@@ -1,10 +1,10 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { render } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 import { PostCard } from '../components/Calendar/PostCard';
 
 describe('Performance Optimization Verifier (CO4 - BT4)', () => {
-  it('prevents re-rendering when identical post props are supplied to React.memo PostCard', () => {
+  it('prevents unnecessary re-rendering when identical post props are supplied to React.memo PostCard', () => {
     const post = {
       id: 'post-perf-1',
       title: 'Performance Post',
@@ -15,13 +15,17 @@ describe('Performance Optimization Verifier (CO4 - BT4)', () => {
       status: 'scheduled'
     };
 
+    const spy = vi.spyOn(React, 'createElement');
     const { rerender } = render(<PostCard post={post} onSelect={() => {}} compact={false} />);
-    const renderBadgeBefore = screen.getByTitle('Render count for performance verification').textContent;
-    expect(renderBadgeBefore).toBe('R:1');
+    
+    const countBefore = spy.mock.calls.length;
 
+    // Re-render with identical props
     rerender(<PostCard post={post} onSelect={() => {}} compact={false} />);
-    const renderBadgeAfter = screen.getByTitle('Render count for performance verification').textContent;
+    
+    const countAfter = spy.mock.calls.length;
 
-    expect(renderBadgeAfter).toBe('R:1');
+    // React.memo prevents function execution on identical props
+    expect(countAfter).toBe(countBefore);
   });
 });

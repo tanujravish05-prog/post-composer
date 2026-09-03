@@ -7,12 +7,8 @@ const initialState = {
   selectedPlatform: 'all',
   searchQuery: '',
   theme: 'dark',
-  isPerformanceOverlayOpen: false,
-  renderTelemetry: {
-    totalRenders: 0,
-    lastRenderTimeMs: 0,
-    memoHits: 0
-  }
+  activeNavTab: 'calendar', // 'calendar' | 'queue' | 'analytics' | 'settings'
+  toasts: [],
 };
 
 const calendarSlice = createSlice({
@@ -31,20 +27,26 @@ const calendarSlice = createSlice({
     setSearchQuery: (state, action) => {
       state.searchQuery = action.payload;
     },
+    setActiveNavTab: (state, action) => {
+      state.activeNavTab = action.payload;
+    },
     toggleTheme: (state) => {
       state.theme = state.theme === 'dark' ? 'light' : 'dark';
     },
-    togglePerformanceOverlay: (state) => {
-      state.isPerformanceOverlayOpen = !state.isPerformanceOverlayOpen;
+    addToast: (state, action) => {
+      const toast = {
+        id: `toast-${Date.now()}`,
+        type: action.payload.type || 'info', // 'info' | 'success' | 'warning' | 'danger'
+        title: action.payload.title,
+        message: action.payload.message,
+      };
+      state.toasts.unshift(toast);
+      if (state.toasts.length > 4) {
+        state.toasts.pop();
+      }
     },
-    recordRenderMetrics: (state, action) => {
-      state.renderTelemetry.totalRenders += 1;
-      if (action.payload?.renderTime) {
-        state.renderTelemetry.lastRenderTimeMs = action.payload.renderTime;
-      }
-      if (action.payload?.memoHit) {
-        state.renderTelemetry.memoHits += 1;
-      }
+    removeToast: (state, action) => {
+      state.toasts = state.toasts.filter((t) => t.id !== action.payload);
     }
   }
 });
@@ -54,9 +56,10 @@ export const {
   setViewMode, 
   setSelectedPlatform, 
   setSearchQuery, 
+  setActiveNavTab,
   toggleTheme, 
-  togglePerformanceOverlay,
-  recordRenderMetrics
+  addToast,
+  removeToast
 } = calendarSlice.actions;
 
 export default calendarSlice.reducer;

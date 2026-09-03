@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { 
   Twitter, 
   Instagram, 
@@ -36,9 +36,6 @@ const PostCardComponent = ({
   onPreview,
   compact = false 
 }) => {
-  const renderCounter = useRef(0);
-  renderCounter.current += 1;
-
   const IconComponent = platformIcons[post.platform] || MessageSquare;
   const badgeClass = platformBadgeClasses[post.platform] || 'badge-twitter';
 
@@ -62,15 +59,15 @@ const PostCardComponent = ({
           e.stopPropagation();
           onSelect(post);
         }}
-        className={`group relative flex items-center justify-between gap-1.5 p-1.5 rounded text-xs font-medium cursor-grab active:cursor-grabbing transition-all hover:scale-[1.02] ${badgeClass}`}
+        className={`group relative flex items-center justify-between gap-1.5 p-1.5 rounded-lg text-xs font-medium cursor-grab active:cursor-grabbing transition-all hover:scale-[1.02] shadow-sm ${badgeClass}`}
         title={`${post.title} (${post.scheduledTime || 'All Day'})`}
         data-testid={`post-card-${post.id}`}
       >
-        <div className="flex items-center gap-1 min-w-0 truncate">
+        <div className="flex items-center gap-1.5 min-w-0 truncate">
           <IconComponent className="w-3.5 h-3.5 flex-shrink-0" />
-          <span className="truncate">{post.title}</span>
+          <span className="truncate font-semibold">{post.title}</span>
         </div>
-        <span className="text-[10px] opacity-75 font-mono flex-shrink-0">
+        <span className="text-[10px] opacity-80 font-mono flex-shrink-0">
           {post.scheduledTime}
         </span>
       </div>
@@ -83,29 +80,24 @@ const PostCardComponent = ({
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onClick={() => onSelect(post)}
-      className="glass-panel p-3.5 rounded-xl cursor-grab active:cursor-grabbing hover:border-indigo-500/50 transition-all group flex flex-col gap-2 relative bg-slate-800/80"
+      className="glass-panel p-4 rounded-xl cursor-grab active:cursor-grabbing hover:border-indigo-500/50 transition-all group flex flex-col gap-2.5 relative bg-slate-900/80 shadow-md"
       data-testid={`post-card-full-${post.id}`}
     >
       <div className="flex items-center justify-between">
-        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${badgeClass}`}>
-          <IconComponent className="w-3 h-3" />
+        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${badgeClass}`}>
+          <IconComponent className="w-3.5 h-3.5" />
           {post.platform.toUpperCase()}
         </span>
 
-        <div className="flex items-center gap-2">
-          <span className={`px-2 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wider ${
-            post.status === 'scheduled' ? 'status-scheduled' :
-            post.status === 'published' ? 'status-published' : 'status-draft'
-          }`}>
-            {post.status}
-          </span>
-          <span className="text-[10px] text-slate-500 font-mono bg-slate-900/60 px-1.5 py-0.5 rounded" title="Render count for performance verification">
-            R:{renderCounter.current}
-          </span>
-        </div>
+        <span className={`px-2.5 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wider ${
+          post.status === 'scheduled' ? 'status-scheduled' :
+          post.status === 'published' ? 'status-published' : 'status-draft'
+        }`}>
+          {post.status}
+        </span>
       </div>
 
-      <h4 className="text-sm font-semibold text-slate-100 line-clamp-1 group-hover:text-indigo-400 transition-colors">
+      <h4 className="text-sm font-bold text-slate-100 line-clamp-1 group-hover:text-indigo-400 transition-colors">
         {post.title}
       </h4>
 
@@ -114,7 +106,7 @@ const PostCardComponent = ({
       </p>
 
       {post.mediaUrl && (
-        <div className="mt-1 h-24 w-full rounded-lg overflow-hidden relative">
+        <div className="mt-1 h-28 w-full rounded-xl overflow-hidden relative border border-slate-800">
           <img 
             src={post.mediaUrl} 
             alt={post.title} 
@@ -123,7 +115,7 @@ const PostCardComponent = ({
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-2 border-t border-slate-700/50 text-xs text-slate-400 mt-1">
+      <div className="flex items-center justify-between pt-2.5 border-t border-slate-800 text-xs text-slate-400 mt-1">
         <div className="flex items-center gap-1.5 text-slate-400 font-mono">
           <Clock className="w-3.5 h-3.5 text-indigo-400" />
           <span>{post.scheduledTime || '09:00'}</span>
@@ -136,8 +128,8 @@ const PostCardComponent = ({
                 e.stopPropagation();
                 onPreview(post);
               }}
-              className="p-1 hover:text-indigo-400 rounded hover:bg-slate-700/50"
-              title="Social Preview"
+              className="p-1.5 hover:text-indigo-400 rounded-lg hover:bg-slate-800"
+              title="Social Media Preview"
             >
               <Eye className="w-3.5 h-3.5" />
             </button>
@@ -148,7 +140,7 @@ const PostCardComponent = ({
                 e.stopPropagation();
                 onDelete(post.id);
               }}
-              className="p-1 hover:text-red-400 rounded hover:bg-slate-700/50"
+              className="p-1.5 hover:text-red-400 rounded-lg hover:bg-slate-800"
               title="Delete Post"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -160,6 +152,7 @@ const PostCardComponent = ({
   );
 };
 
+// CO4 Performance Optimization: React.memo prevents re-rendering when props are unchanged
 export const PostCard = React.memo(PostCardComponent, (prevProps, nextProps) => {
   return (
     prevProps.post.id === nextProps.post.id &&

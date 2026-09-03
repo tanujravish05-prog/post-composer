@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getWeekDays, getHoursList } from '../../utils/dateUtils';
 import { PostCard } from './PostCard';
 import { reschedulePost } from '../../store/postsSlice';
+import { addToast } from '../../store/calendarSlice';
 
 export const WeekView = ({ onSelectPost, onOpenCreateModal }) => {
   const dispatch = useDispatch();
@@ -43,6 +44,11 @@ export const WeekView = ({ onSelectPost, onOpenCreateModal }) => {
     const postId = e.dataTransfer.getData('text/plain');
     if (postId) {
       dispatch(reschedulePost({ id: postId, newDate: dateString, newTime: hourFormatted }));
+      dispatch(addToast({
+        type: 'success',
+        title: 'Slot Updated',
+        message: `Rescheduled to ${dateString} at ${hourFormatted}`
+      }));
     }
   }, [dispatch]);
 
@@ -57,15 +63,15 @@ export const WeekView = ({ onSelectPost, onOpenCreateModal }) => {
   };
 
   return (
-    <div className="flex flex-col w-full rounded-2xl overflow-hidden glass-panel border border-slate-700/60 shadow-xl max-h-[750px] overflow-y-auto">
-      <div className="grid grid-cols-8 bg-slate-900/90 border-b border-slate-700/60 sticky top-0 z-20">
-        <div className="p-3 text-xs font-semibold text-slate-500 border-r border-slate-700/50 flex items-center justify-center">
+    <div className="flex flex-col w-full rounded-2xl overflow-hidden glass-panel border border-slate-800 shadow-xl max-h-[750px] overflow-y-auto">
+      <div className="grid grid-cols-8 bg-slate-900/90 border-b border-slate-800 sticky top-0 z-20">
+        <div className="p-3 text-xs font-bold text-slate-400 border-r border-slate-800 flex items-center justify-center">
           TIME (EST)
         </div>
         {weekDays.map((day) => (
           <div
             key={day.dateString}
-            className={`p-3 text-center border-r border-slate-700/50 ${
+            className={`p-3 text-center border-r border-slate-800 ${
               day.isToday ? 'bg-indigo-950/40 text-indigo-400 font-bold' : 'text-slate-300'
             }`}
           >
@@ -81,10 +87,10 @@ export const WeekView = ({ onSelectPost, onOpenCreateModal }) => {
         ))}
       </div>
 
-      <div className="divide-y divide-slate-800/60">
+      <div className="divide-y divide-slate-800/80">
         {hoursList.map(({ hour, hourFormatted, label }) => (
-          <div key={hour} className="grid grid-cols-8 min-h-[70px]">
-            <div className="p-2 border-r border-slate-700/50 text-xs font-mono text-slate-400 flex items-start justify-center pt-3 bg-slate-900/30">
+          <div key={hour} className="grid grid-cols-8 min-h-[72px]">
+            <div className="p-2 border-r border-slate-800 text-xs font-mono text-slate-400 flex items-start justify-center pt-3 bg-slate-950/40">
               {label}
             </div>
 
@@ -99,7 +105,7 @@ export const WeekView = ({ onSelectPost, onOpenCreateModal }) => {
                   onDragLeave={handleDragLeave}
                   onDrop={(e) => handleDrop(e, day.dateString, hourFormatted)}
                   onClick={() => onOpenCreateModal(day.dateString, hourFormatted)}
-                  className="p-1.5 border-r border-slate-800/40 hover:bg-slate-800/30 transition-colors flex flex-col gap-1.5 relative group min-h-[70px]"
+                  className="p-1.5 border-r border-slate-800/60 hover:bg-slate-900/40 transition-colors flex flex-col gap-1.5 relative group min-h-[72px]"
                   data-testid={`week-slot-${key}`}
                 >
                   {slotPosts.map((post) => (

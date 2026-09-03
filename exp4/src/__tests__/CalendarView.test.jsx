@@ -17,7 +17,7 @@ const createMockStore = (customState = {}) => {
   });
 };
 
-describe('Component & Integration Testing: Calendar System (CO3/CO5)', () => {
+describe('Production UI & Integration Testing: PostPulse Pro', () => {
   it('renders application brand title and navigation controls', () => {
     const store = createMockStore();
     render(
@@ -26,7 +26,7 @@ describe('Component & Integration Testing: Calendar System (CO3/CO5)', () => {
       </Provider>
     );
 
-    expect(screen.getByText(/PostPulse/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/PostPulse/i).length).toBeGreaterThan(0);
     expect(screen.getByTestId('create-post-btn')).toBeInTheDocument();
     expect(screen.getByTestId('search-posts-input')).toBeInTheDocument();
   });
@@ -74,20 +74,5 @@ describe('Component & Integration Testing: Calendar System (CO3/CO5)', () => {
 
     expect(screen.getByTestId('post-modal')).toBeInTheDocument();
     expect(screen.getByTestId('input-title')).toBeInTheDocument();
-  });
-
-  it('toggles CO4 performance monitor panel overlay', () => {
-    const store = createMockStore();
-    render(
-      <Provider store={store}>
-        <App />
-      </Provider>
-    );
-
-    const perfBtn = screen.getByTestId('perf-toggle-btn');
-    fireEvent.click(perfBtn);
-
-    expect(screen.getByTestId('performance-monitor')).toBeInTheDocument();
-    expect(screen.getByText(/CO4\/CO5 Performance Telemetry/i)).toBeInTheDocument();
   });
 });
