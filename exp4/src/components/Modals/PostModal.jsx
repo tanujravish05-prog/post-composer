@@ -66,7 +66,7 @@ export const PostModal = ({ isOpen, onClose, initialData, defaultDate, defaultTi
       dispatch(addToast({
         type: 'info',
         title: 'Post Updated',
-        message: 'Your social post changes were saved successfully.'
+        message: 'Your social post changes were saved.'
       }));
     } else {
       dispatch(addPost(postPayload));
@@ -85,19 +85,19 @@ export const PostModal = ({ isOpen, onClose, initialData, defaultDate, defaultTi
       dispatch(addToast({
         type: 'warning',
         title: 'Post Deleted',
-        message: 'The post was removed from your schedule.'
+        message: 'The post was removed.'
       }));
       onClose();
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in" data-testid="post-modal">
-      <div className="glass-panel w-full max-w-lg p-6 rounded-2xl border border-slate-700/80 shadow-2xl bg-slate-900/95 relative max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between border-b border-slate-700/60 pb-4 mb-4">
-          <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-            <Share2 className="w-5 h-5 text-indigo-400" />
-            {initialData ? 'Edit Scheduled Post' : 'Schedule New Post'}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-900/60 backdrop-blur-xs animate-fade-in" data-testid="post-modal">
+      <div className="glass-panel w-full max-w-lg p-6 rounded-2xl border border-zinc-300 bg-white shadow-xl relative max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between border-b border-zinc-200 pb-3 mb-4">
+          <h3 className="text-base font-bold text-zinc-900 flex items-center gap-2">
+            <Share2 className="w-4 h-4 text-zinc-700" />
+            {initialData ? 'Edit Post' : 'Schedule New Post'}
           </h3>
           <button onClick={onClose} className="btn-icon">
             <X className="w-4 h-4" />
@@ -106,24 +106,24 @@ export const PostModal = ({ isOpen, onClose, initialData, defaultDate, defaultTi
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">Headline / Title</label>
+            <label className="block text-xs font-semibold text-zinc-700 mb-1">Headline / Title</label>
             <input
               type="text"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. 🚀 Product Launch Update"
-              className="w-full bg-slate-800/80 border border-slate-700/70 rounded-xl px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              placeholder="e.g. 🚀 Launching NextGen Suite"
+              className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none focus:border-zinc-900"
               data-testid="input-title"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">Social Channel</label>
+            <label className="block text-xs font-semibold text-zinc-700 mb-1">Social Channel</label>
             <select
               value={platform}
               onChange={(e) => setPlatform(e.target.value)}
-              className="w-full bg-slate-800/80 border border-slate-700/70 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 capitalize"
+              className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none focus:border-zinc-900 capitalize"
               data-testid="input-platform"
             >
               <option value="twitter">X / Twitter</option>
@@ -137,8 +137,8 @@ export const PostModal = ({ isOpen, onClose, initialData, defaultDate, defaultTi
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+              <label className="block text-xs font-semibold text-zinc-700 mb-1 flex items-center gap-1">
+                <Calendar className="w-3.5 h-3.5 text-zinc-500" />
                 Execution Date
               </label>
               <input
@@ -146,13 +146,13 @@ export const PostModal = ({ isOpen, onClose, initialData, defaultDate, defaultTi
                 required
                 value={scheduledDate}
                 onChange={(e) => setScheduledDate(e.target.value)}
-                className="w-full bg-slate-800/80 border border-slate-700/70 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500"
+                className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none focus:border-zinc-900"
                 data-testid="input-date"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-indigo-400" />
+              <label className="block text-xs font-semibold text-zinc-700 mb-1 flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-zinc-500" />
                 Time Slot
               </label>
               <input
@@ -160,66 +160,66 @@ export const PostModal = ({ isOpen, onClose, initialData, defaultDate, defaultTi
                 required
                 value={scheduledTime}
                 onChange={(e) => setScheduledTime(e.target.value)}
-                className="w-full bg-slate-800/80 border border-slate-700/70 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500"
+                className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none focus:border-zinc-900"
                 data-testid="input-time"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">Content Copy</label>
+            <label className="block text-xs font-semibold text-zinc-700 mb-1">Content Copy</label>
             <textarea
               required
               rows={4}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Write your social post content here..."
-              className="w-full bg-slate-800/80 border border-slate-700/70 rounded-xl px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 resize-none"
+              placeholder="Write your social post content..."
+              className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none focus:border-zinc-900 resize-none"
               data-testid="input-content"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
-                <Image className="w-3.5 h-3.5 text-indigo-400" />
+              <label className="block text-xs font-semibold text-zinc-700 mb-1 flex items-center gap-1">
+                <Image className="w-3.5 h-3.5 text-zinc-500" />
                 Image URL (Optional)
               </label>
               <input
                 type="url"
                 value={mediaUrl}
                 onChange={(e) => setMediaUrl(e.target.value)}
-                placeholder="https://images.unsplash.com/..."
-                className="w-full bg-slate-800/80 border border-slate-700/70 rounded-xl px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                placeholder="https://..."
+                className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none focus:border-zinc-900"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
-                <Tag className="w-3.5 h-3.5 text-indigo-400" />
+              <label className="block text-xs font-semibold text-zinc-700 mb-1 flex items-center gap-1">
+                <Tag className="w-3.5 h-3.5 text-zinc-500" />
                 Hashtags
               </label>
               <input
                 type="text"
                 value={tagsInput}
                 onChange={(e) => setTagsInput(e.target.value)}
-                placeholder="React, Redux, Performance"
-                className="w-full bg-slate-800/80 border border-slate-700/70 rounded-xl px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                placeholder="React, Redux"
+                className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none focus:border-zinc-900"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">Status</label>
+            <label className="block text-xs font-semibold text-zinc-700 mb-1">Status</label>
             <div className="flex items-center gap-4">
               {['scheduled', 'draft', 'published'].map((st) => (
-                <label key={st} className="flex items-center gap-2 text-xs text-slate-300 capitalize cursor-pointer font-medium">
+                <label key={st} className="flex items-center gap-2 text-xs text-zinc-700 capitalize cursor-pointer font-medium">
                   <input
                     type="radio"
                     name="status"
                     value={st}
                     checked={status === st}
                     onChange={(e) => setStatus(e.target.value)}
-                    className="accent-indigo-500"
+                    className="accent-zinc-900"
                   />
                   {st}
                 </label>
@@ -227,12 +227,12 @@ export const PostModal = ({ isOpen, onClose, initialData, defaultDate, defaultTi
             </div>
           </div>
 
-          <div className="flex items-center justify-between border-t border-slate-700/60 pt-4 mt-2">
+          <div className="flex items-center justify-between border-t border-zinc-200 pt-4 mt-2">
             {initialData ? (
               <button
                 type="button"
                 onClick={handleDelete}
-                className="btn border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs"
+                className="btn btn-danger text-xs"
               >
                 <Trash2 className="w-4 h-4" />
                 Delete Post

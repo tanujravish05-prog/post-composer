@@ -1,51 +1,53 @@
-/* PostPulse NextGen - Ultra-Sleek Glassmorphic Design System */
+/* Experiment 2 Clean Minimalist Visual Design System for Exp 4 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 :root {
-  --bg-primary: #090d16;
-  --bg-secondary: #111827;
-  --bg-card: rgba(17, 24, 39, 0.75);
-  --bg-card-hover: rgba(31, 41, 55, 0.85);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-highlight: rgba(99, 102, 241, 0.4);
+  --bg-primary: #ffffff;
+  --bg-secondary: #f4f4f5;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fafafa;
+  --border-color: #e4e4e7;
+  --border-highlight: #a1a1aa;
   
-  --text-main: #f9fafb;
-  --text-muted: #9ca3af;
-  --text-dim: #6b7280;
+  --text-main: #18181b;
+  --text-muted: #71717a;
+  --text-dim: #a1a1aa;
 
-  --accent-primary: #6366f1;
-  --accent-primary-hover: #4f46e5;
-  --accent-secondary: #06b6d4;
-  --accent-success: #10b981;
-  --accent-warning: #f59e0b;
-  --accent-danger: #ef4444;
+  --accent-primary: #18181b;
+  --accent-primary-hover: #27272a;
+  --accent-secondary: #2563eb;
+  --accent-success: #16a34a;
+  --accent-warning: #ca8a04;
+  --accent-danger: #dc2626;
 
-  /* Social Platform Brand Colors */
-  --platform-twitter: #1d9bf0;
+  /* Platform Colors */
+  --platform-twitter: #0284c7;
   --platform-instagram: #e1306c;
-  --platform-linkedin: #0a66c2;
-  --platform-youtube: #ff0000;
-  --platform-facebook: #1877f2;
-  --platform-threads: #a855f7;
+  --platform-linkedin: #0284c7;
+  --platform-youtube: #dc2626;
+  --platform-facebook: #2563eb;
+  --platform-threads: #7c3aed;
 
-  --font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --shadow-glow: 0 0 25px rgba(99, 102, 241, 0.2);
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
 }
 
-[data-theme='light'] {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #ffffff;
-  --bg-card: rgba(255, 255, 255, 0.9);
-  --bg-card-hover: rgba(243, 244, 246, 0.95);
-  --border-color: rgba(0, 0, 0, 0.08);
-  --border-highlight: rgba(99, 102, 241, 0.5);
+[data-theme='dark'] {
+  --bg-primary: #09090b;
+  --bg-secondary: #18181b;
+  --bg-card: #09090b;
+  --bg-card-hover: #18181b;
+  --border-color: #27272a;
+  --border-highlight: #3f3f46;
   
-  --text-main: #0f172a;
-  --text-muted: #475569;
-  --text-dim: #94a3b8;
+  --text-main: #fafafa;
+  --text-muted: #a1a1aa;
+  --text-dim: #71717a;
 
-  --shadow-glow: 0 4px 20px rgba(99, 102, 241, 0.08);
+  --accent-primary: #fafafa;
+  --accent-primary-hover: #f4f4f5;
 }
 
 * {
@@ -71,63 +73,53 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--text-dim);
-  border-radius: 4px;
+  background: #d4d4d8;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-primary);
+  background: #a1a1aa;
 }
 
-/* Glassmorphic Panel Utility */
+/* Minimalist Card Panel (Exp 2 Style) */
 .glass-panel {
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.15s ease;
 }
 
-.glow-effect {
-  box-shadow: var(--shadow-glow);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.glass-panel:hover {
+  border-color: var(--border-highlight);
 }
 
 /* Drag and Drop Visual Feedback */
 .drag-over {
-  background-color: rgba(99, 102, 241, 0.18) !important;
-  border: 2px dashed var(--accent-primary) !important;
-  transform: scale(1.005);
+  background-color: #f4f4f5 !important;
+  border: 2px dashed #18181b !important;
 }
 
 .dragging {
-  opacity: 0.35;
-  transform: scale(0.96);
+  opacity: 0.4;
 }
 
 /* Platform Badges */
-.badge-twitter { background-color: rgba(29, 155, 240, 0.15); color: var(--platform-twitter); border: 1px solid rgba(29, 155, 240, 0.3); }
-.badge-instagram { background-color: rgba(225, 48, 108, 0.15); color: var(--platform-instagram); border: 1px solid rgba(225, 48, 108, 0.3); }
-.badge-linkedin { background-color: rgba(10, 102, 194, 0.15); color: var(--platform-linkedin); border: 1px solid rgba(10, 102, 194, 0.3); }
-.badge-youtube { background-color: rgba(255, 0, 0, 0.15); color: var(--platform-youtube); border: 1px solid rgba(255, 0, 0, 0.3); }
-.badge-facebook { background-color: rgba(24, 119, 242, 0.15); color: var(--platform-facebook); border: 1px solid rgba(24, 119, 242, 0.3); }
-.badge-threads { background-color: rgba(168, 85, 247, 0.15); color: var(--platform-threads); border: 1px solid rgba(168, 85, 247, 0.3); }
+.badge-twitter { background-color: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; }
+.badge-instagram { background-color: #fdf2f8; color: #db2777; border: 1px solid #fbcfe8; }
+.badge-linkedin { background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+.badge-youtube { background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.badge-facebook { background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.badge-threads { background-color: #faf5ff; color: #7c3aed; border: 1px solid #e9d5ff; }
 
 /* Status Badges */
-.status-scheduled { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
-.status-draft { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
-.status-published { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
+.status-scheduled { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+.status-draft { background: #fefce8; color: #ca8a04; border: 1px solid #fef08a; }
+.status-published { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
 
 /* Calendar Grids */
 .calendar-month-grid {
@@ -140,10 +132,10 @@ body {
 }
 
 .calendar-day-cell {
-  background-color: var(--bg-secondary);
-  min-height: 130px;
+  background-color: var(--bg-card);
+  min-height: 125px;
   padding: 8px;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease;
   display: flex;
   flex-direction: column;
 }
@@ -153,61 +145,62 @@ body {
 }
 
 .calendar-day-cell.other-month {
-  opacity: 0.35;
+  opacity: 0.4;
+  background-color: var(--bg-secondary);
 }
 
 .calendar-day-cell.today {
   border-top: 3px solid var(--accent-primary);
 }
 
-/* Button & Tool Styles */
+/* Button Styles (Exp 2 Style) */
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: var(--radius-sm);
-  font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
-  border: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  font-family: inherit;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+  background: #18181b;
+  color: #ffffff;
 }
 
 .btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+  background: #27272a;
 }
 
 .btn-secondary {
-  background: var(--bg-card);
-  color: var(--text-main);
-  border: 1px solid var(--border-color);
+  background: #ffffff;
+  border: 1px solid #d4d4d8;
+  color: #18181b;
 }
 
 .btn-secondary:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--border-highlight);
+  background: #f4f4f5;
+  border-color: #a1a1aa;
 }
 
 .btn-icon {
-  padding: 8px;
+  padding: 6px;
   border-radius: var(--radius-sm);
-  background: var(--bg-card);
-  color: var(--text-muted);
-  border: 1px solid var(--border-color);
+  background: #ffffff;
+  color: #71717a;
+  border: 1px solid #d4d4d8;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .btn-icon:hover {
-  color: var(--text-main);
-  border-color: var(--border-highlight);
-  background: var(--bg-card-hover);
+  color: #18181b;
+  border-color: #a1a1aa;
+  background: #f4f4f5;
 }

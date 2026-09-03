@@ -65,23 +65,23 @@ export const WeekView = ({ onSelectPost, onOpenCreateModal }) => {
   };
 
   return (
-    <div className="flex flex-col w-full rounded-2xl overflow-hidden glass-panel border border-slate-700/60 shadow-xl max-h-[750px] overflow-y-auto">
-      <div className="grid grid-cols-8 bg-slate-900/90 border-b border-slate-700/60 sticky top-0 z-20">
-        <div className="p-3 text-xs font-semibold text-slate-500 border-r border-slate-700/50 flex items-center justify-center">
-          TIME (EST)
+    <div className="flex flex-col w-full rounded-xl overflow-hidden glass-panel border border-zinc-200 bg-white max-h-[750px] overflow-y-auto">
+      <div className="grid grid-cols-8 bg-zinc-100 border-b border-zinc-200 sticky top-0 z-20">
+        <div className="p-3 text-xs font-bold text-zinc-500 border-r border-zinc-200 flex items-center justify-center">
+          TIME
         </div>
         {weekDays.map((day) => (
           <div
             key={day.dateString}
-            className={`p-3 text-center border-r border-slate-700/50 ${
-              day.isToday ? 'bg-indigo-950/40 text-indigo-400 font-bold' : 'text-slate-300'
+            className={`p-3 text-center border-r border-zinc-200 ${
+              day.isToday ? 'bg-zinc-200/60 font-bold' : 'text-zinc-700'
             }`}
           >
-            <div className="text-[11px] uppercase tracking-wider text-slate-400 font-medium">
+            <div className="text-[11px] uppercase tracking-wider font-semibold text-zinc-500">
               {day.dayName}
             </div>
-            <div className={`text-sm font-bold mt-0.5 inline-block px-2 py-0.5 rounded-full ${
-              day.isToday ? 'bg-indigo-600 text-white' : ''
+            <div className={`text-xs font-bold mt-0.5 inline-block px-2 py-0.5 rounded ${
+              day.isToday ? 'bg-zinc-900 text-white' : ''
             }`}>
               {day.dayNumber}
             </div>
@@ -89,10 +89,10 @@ export const WeekView = ({ onSelectPost, onOpenCreateModal }) => {
         ))}
       </div>
 
-      <div className="divide-y divide-slate-800/60">
+      <div className="divide-y divide-zinc-200">
         {hoursList.map(({ hour, hourFormatted, label }) => (
-          <div key={hour} className="grid grid-cols-8 min-h-[70px]">
-            <div className="p-2 border-r border-slate-700/50 text-xs font-mono text-slate-400 flex items-start justify-center pt-3 bg-slate-900/30">
+          <div key={hour} className="grid grid-cols-8 min-h-[65px]">
+            <div className="p-2 border-r border-zinc-200 text-xs font-mono text-zinc-500 flex items-start justify-center pt-2.5 bg-zinc-50 font-medium">
               {label}
             </div>
 
@@ -107,7 +107,7 @@ export const WeekView = ({ onSelectPost, onOpenCreateModal }) => {
                   onDragLeave={handleDragLeave}
                   onDrop={(e) => handleDrop(e, day.dateString, hourFormatted)}
                   onClick={() => onOpenCreateModal(day.dateString, hourFormatted)}
-                  className="p-1.5 border-r border-slate-800/40 hover:bg-slate-800/30 transition-colors flex flex-col gap-1.5 relative group min-h-[70px]"
+                  className="p-1.5 border-r border-zinc-200 hover:bg-zinc-50 transition-colors flex flex-col gap-1.5 relative group min-h-[65px]"
                   data-testid={`week-slot-${key}`}
                 >
                   {slotPosts.map((post) => (

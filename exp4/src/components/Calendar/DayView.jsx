@@ -55,18 +55,18 @@ export const DayView = ({ onSelectPost, onOpenCreateModal, onPreviewPost }) => {
   };
 
   return (
-    <div className="flex flex-col w-full rounded-2xl overflow-hidden glass-panel border border-slate-700/60 shadow-xl max-h-[750px] overflow-y-auto">
-      <div className="p-4 bg-slate-900/90 border-b border-slate-700/60 flex items-center justify-between sticky top-0 z-20">
+    <div className="flex flex-col w-full rounded-xl overflow-hidden glass-panel border border-zinc-200 bg-white max-h-[750px] overflow-y-auto">
+      <div className="p-4 bg-zinc-50 border-b border-zinc-200 flex items-center justify-between sticky top-0 z-20">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30">
-            <CalendarIcon className="w-5 h-5" />
+          <div className="p-2.5 bg-zinc-900 text-white rounded-lg">
+            <CalendarIcon className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-slate-100">
+            <h3 className="text-sm font-bold text-zinc-900">
               {formatDate(selectedDateStr, 'EEEE, MMMM d, yyyy')}
             </h3>
-            <p className="text-xs text-slate-400">
-              {dayPosts.length} post{dayPosts.length !== 1 ? 's' : ''} scheduled for this day
+            <p className="text-xs text-zinc-500">
+              {dayPosts.length} post{dayPosts.length !== 1 ? 's' : ''} scheduled
             </p>
           </div>
         </div>
@@ -76,11 +76,11 @@ export const DayView = ({ onSelectPost, onOpenCreateModal, onPreviewPost }) => {
           className="btn btn-primary text-xs"
         >
           <Plus className="w-4 h-4" />
-          Schedule New Post
+          Schedule Post
         </button>
       </div>
 
-      <div className="divide-y divide-slate-800/60 p-4">
+      <div className="divide-y divide-zinc-200 p-4">
         {hoursList.map(({ hour, hourFormatted, label }) => {
           const slotPosts = postsByHour[hourFormatted] || [];
 
@@ -93,12 +93,11 @@ export const DayView = ({ onSelectPost, onOpenCreateModal, onPreviewPost }) => {
               }}
               onDragLeave={(e) => e.currentTarget.classList.remove('drag-over')}
               onDrop={(e) => handleDrop(e, hourFormatted)}
-              className="py-3 flex gap-4 min-h-[90px] group transition-colors hover:bg-slate-800/20 rounded-xl px-2"
+              className="py-3 flex gap-4 min-h-[85px] group transition-colors hover:bg-zinc-50 rounded-lg px-2"
               data-testid={`day-slot-${hourFormatted}`}
             >
-              <div className="w-20 text-xs font-mono text-slate-400 flex flex-col items-center pt-1 border-r border-slate-700/40 pr-3">
-                <span className="font-semibold text-slate-200">{label}</span>
-                <span className="text-[10px] text-slate-500">{hourFormatted}</span>
+              <div className="w-20 text-xs font-mono text-zinc-500 flex flex-col items-center pt-1 border-r border-zinc-200 pr-3 font-semibold">
+                <span>{label}</span>
               </div>
 
               <div className="flex-1 flex flex-col gap-2">
@@ -118,10 +117,10 @@ export const DayView = ({ onSelectPost, onOpenCreateModal, onPreviewPost }) => {
                 ) : (
                   <div 
                     onClick={() => onOpenCreateModal(selectedDateStr, hourFormatted)}
-                    className="h-full border border-dashed border-slate-700/50 rounded-xl flex items-center justify-start px-4 text-xs text-slate-500 cursor-pointer hover:border-indigo-500/50 hover:text-indigo-400 transition-all opacity-40 hover:opacity-100"
+                    className="h-full border border-dashed border-zinc-300 rounded-lg flex items-center justify-start px-3 text-xs text-zinc-400 cursor-pointer hover:border-zinc-500 hover:text-zinc-700 transition-all"
                   >
                     <Plus className="w-3.5 h-3.5 mr-2" />
-                    Click or drop post to schedule at {label}
+                    Drop post or click to schedule at {label}
                   </div>
                 )}
               </div>

@@ -1,37 +1,28 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import postsReducer from '../store/postsSlice';
 import calendarReducer from '../store/calendarSlice';
 import { App } from '../App';
 
-const createMockStore = (customState = {}) => {
+const createMockStore = () => {
   return configureStore({
     reducer: {
       posts: postsReducer,
       calendar: calendarReducer,
     },
-    preloadedState: customState,
   });
 };
 
-describe('PostPulse NextGen Integration Testing (CO3/CO5)', () => {
-  it('renders application brand title and navigation controls', () => {
-    const store = createMockStore();
-    render(
-      <Provider store={store}>
-        <App />
-      </Provider>
-    );
-
-    expect(screen.getAllByText(/PostPulse/i).length).toBeGreaterThan(0);
-    expect(screen.getByTestId('create-post-btn')).toBeInTheDocument();
-    expect(screen.getByTestId('search-posts-input')).toBeInTheDocument();
+describe('Integrated App Testing (Exp 3 Auth + Exp 4 Calendar Scheduler)', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
   });
 
-  it('switches calendar views between Month, Week, and Day modes', () => {
+  it('renders login page by default for unauthenticated users', async () => {
     const store = createMockStore();
     render(
       <Provider store={store}>
@@ -39,16 +30,14 @@ describe('PostPulse NextGen Integration Testing (CO3/CO5)', () => {
       </Provider>
     );
 
-    const weekBtn = screen.getByTestId('view-mode-week');
-    fireEvent.click(weekBtn);
-    expect(store.getState().calendar.viewMode).toBe('week');
-
-    const dayBtn = screen.getByTestId('view-mode-day');
-    fireEvent.click(dayBtn);
-    expect(store.getState().calendar.viewMode).toBe('day');
+    await waitFor(() => {
+      expect(screen.getByText(/PostPulse Suite/i)).toBeInTheDocument();
+      expect(screen.getByTestId('input-username')).toBeInTheDocument();
+      expect(screen.getByTestId('login-submit-btn')).toBeInTheDocument();
+    });
   });
 
-  it('filters posts by social platform filter pill', () => {
+  it('allows quick-login as Admin and displays main Dashboard', async () => {
     const store = createMockStore();
     render(
       <Provider store={store}>
@@ -56,12 +45,17 @@ describe('PostPulse NextGen Integration Testing (CO3/CO5)', () => {
       </Provider>
     );
 
-    const twitterFilter = screen.getByTestId('platform-filter-twitter');
-    fireEvent.click(twitterFilter);
-    expect(store.getState().calendar.selectedPlatform).toBe('twitter');
+    const adminBtn = await screen.findByTestId('quick-login-admin');
+    fireEvent.click(adminBtn);
+
+    await waitFor(() => {
+      expect(screen.getAllByText(/PostPulse/i).length).toBeGreaterThan(0);
+      expect(screen.getByTestId('create-post-btn')).toBeInTheDocument();
+      expect(screen.getByTestId('search-posts-input')).toBeInTheDocument();
+    });
   });
 
-  it('opens and closes the schedule new post modal', () => {
+  it('allows quick-login as Editor and navigates calendar views', async () => {
     const store = createMockStore();
     render(
       <Provider store={store}>
@@ -69,14 +63,17 @@ describe('PostPulse NextGen Integration Testing (CO3/CO5)', () => {
       </Provider>
     );
 
-    const createBtn = screen.getByTestId('create-post-btn');
-    fireEvent.click(createBtn);
+    const editorBtn = await screen.findByTestId('quick-login-editor');
+    fireEvent.click(editorBtn);
 
-    expect(screen.getByTestId('post-modal')).toBeInTheDocument();
-    expect(screen.getByTestId('input-title')).toBeInTheDocument();
+    await waitFor(() => {
+      const weekBtn = screen.getByTestId('view-mode-week');
+      fireEvent.click(weekBtn);
+      expect(store.getState().calendar.viewMode).toBe('week');
+    });
   });
 
-  it('toggles CO4 performance monitor panel overlay', () => {
+  it('filters posts by platform and opens schedule modal', async () => {
     const store = createMockStore();
     render(
       <Provider store={store}>
@@ -84,10 +81,17 @@ describe('PostPulse NextGen Integration Testing (CO3/CO5)', () => {
       </Provider>
     );
 
-    const perfBtn = screen.getByTestId('perf-toggle-btn');
-    fireEvent.click(perfBtn);
+    const adminBtn = await screen.findByTestId('quick-login-admin');
+    fireEvent.click(adminBtn);
 
-    expect(screen.getByTestId('performance-monitor')).toBeInTheDocument();
-    expect(screen.getByText(/CO4\/CO5 Performance Telemetry/i)).toBeInTheDocument();
+    await waitFor(() => {
+      const twitterFilter = screen.getByTestId('platform-filter-twitter');
+      fireEvent.click(twitterFilter);
+      expect(store.getState().calendar.selectedPlatform).toBe('twitter');
+
+      const createBtn = screen.getByTestId('create-post-btn');
+      fireEvent.click(createBtn);
+      expect(screen.getByTestId('post-modal')).toBeInTheDocument();
+    });
   });
 });

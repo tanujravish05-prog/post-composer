@@ -62,7 +62,7 @@ const PostCardComponent = ({
           e.stopPropagation();
           onSelect(post);
         }}
-        className={`group relative flex items-center justify-between gap-1.5 p-1.5 rounded text-xs font-medium cursor-grab active:cursor-grabbing transition-all hover:scale-[1.02] ${badgeClass}`}
+        className={`group relative flex items-center justify-between gap-1.5 p-1.5 rounded text-xs font-medium cursor-grab active:cursor-grabbing border ${badgeClass}`}
         title={`${post.title} (${post.scheduledTime || 'All Day'})`}
         data-testid={`post-card-${post.id}`}
       >
@@ -70,7 +70,7 @@ const PostCardComponent = ({
           <IconComponent className="w-3.5 h-3.5 flex-shrink-0" />
           <span className="truncate">{post.title}</span>
         </div>
-        <span className="text-[10px] opacity-75 font-mono flex-shrink-0">
+        <span className="text-[10px] opacity-80 font-mono flex-shrink-0 font-semibold">
           {post.scheduledTime}
         </span>
       </div>
@@ -83,38 +83,38 @@ const PostCardComponent = ({
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onClick={() => onSelect(post)}
-      className="glass-panel p-3.5 rounded-xl cursor-grab active:cursor-grabbing hover:border-indigo-500/50 transition-all group flex flex-col gap-2 relative bg-slate-800/80 shadow-md"
+      className="glass-panel p-3.5 rounded-xl cursor-grab active:cursor-grabbing border border-zinc-200 hover:border-zinc-400 bg-white shadow-xs transition-all group flex flex-col gap-2 relative"
       data-testid={`post-card-full-${post.id}`}
     >
       <div className="flex items-center justify-between">
-        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${badgeClass}`}>
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold ${badgeClass}`}>
           <IconComponent className="w-3 h-3" />
           {post.platform.toUpperCase()}
         </span>
 
         <div className="flex items-center gap-2">
-          <span className={`px-2 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wider ${
+          <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider ${
             post.status === 'scheduled' ? 'status-scheduled' :
             post.status === 'published' ? 'status-published' : 'status-draft'
           }`}>
             {post.status}
           </span>
-          <span className="text-[10px] text-slate-500 font-mono bg-slate-900/60 px-1.5 py-0.5 rounded" title="Render count for performance verification">
+          <span className="text-[10px] text-zinc-500 font-mono bg-zinc-100 px-1.5 py-0.5 rounded border border-zinc-200" title="Render count for performance verification">
             R:{renderCounter.current}
           </span>
         </div>
       </div>
 
-      <h4 className="text-sm font-semibold text-slate-100 line-clamp-1 group-hover:text-indigo-400 transition-colors">
+      <h4 className="text-xs font-bold text-zinc-900 line-clamp-1 group-hover:text-blue-600 transition-colors">
         {post.title}
       </h4>
 
-      <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+      <p className="text-xs text-zinc-600 line-clamp-2 leading-relaxed">
         {post.content}
       </p>
 
       {post.mediaUrl && (
-        <div className="mt-1 h-24 w-full rounded-lg overflow-hidden relative border border-slate-800">
+        <div className="mt-1 h-24 w-full rounded-lg overflow-hidden relative border border-zinc-200">
           <img 
             src={post.mediaUrl} 
             alt={post.title} 
@@ -123,9 +123,9 @@ const PostCardComponent = ({
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-2 border-t border-slate-700/50 text-xs text-slate-400 mt-1">
-        <div className="flex items-center gap-1.5 text-slate-400 font-mono">
-          <Clock className="w-3.5 h-3.5 text-indigo-400" />
+      <div className="flex items-center justify-between pt-2 border-t border-zinc-100 text-xs text-zinc-500 mt-1">
+        <div className="flex items-center gap-1.5 text-zinc-600 font-mono">
+          <Clock className="w-3.5 h-3.5 text-zinc-500" />
           <span>{post.scheduledTime || '09:00'}</span>
         </div>
 
@@ -136,7 +136,7 @@ const PostCardComponent = ({
                 e.stopPropagation();
                 onPreview(post);
               }}
-              className="p-1 hover:text-indigo-400 rounded hover:bg-slate-700/50"
+              className="p-1 hover:text-zinc-900 rounded hover:bg-zinc-100"
               title="Social Media Preview"
             >
               <Eye className="w-3.5 h-3.5" />
@@ -148,7 +148,7 @@ const PostCardComponent = ({
                 e.stopPropagation();
                 onDelete(post.id);
               }}
-              className="p-1 hover:text-red-400 rounded hover:bg-slate-700/50"
+              className="p-1 hover:text-red-600 rounded hover:bg-red-50 text-red-500"
               title="Delete Post"
             >
               <Trash2 className="w-3.5 h-3.5" />

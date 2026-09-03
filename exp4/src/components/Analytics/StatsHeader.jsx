@@ -15,44 +15,44 @@ export const StatsHeader = () => {
   }, [posts]);
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6 animate-fade-in" data-testid="stats-header">
-      <div className="glass-panel p-4 rounded-xl border border-slate-700/60 flex items-center justify-between">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6" data-testid="stats-header">
+      <div className="glass-panel p-4 rounded-xl border border-zinc-200 bg-white flex items-center justify-between">
         <div>
-          <p className="text-xs font-medium text-slate-400">Total Posts</p>
-          <h3 className="text-2xl font-extrabold text-white mt-1">{stats.total}</h3>
+          <p className="text-xs font-medium text-zinc-500">Total Posts</p>
+          <h3 className="text-xl font-bold text-zinc-900 mt-1">{stats.total}</h3>
         </div>
-        <div className="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl border border-indigo-500/20">
-          <Calendar className="w-5 h-5" />
+        <div className="p-2.5 bg-zinc-100 text-zinc-800 rounded-lg">
+          <Calendar className="w-4 h-4" />
         </div>
       </div>
 
-      <div className="glass-panel p-4 rounded-xl border border-slate-700/60 flex items-center justify-between">
+      <div className="glass-panel p-4 rounded-xl border border-zinc-200 bg-white flex items-center justify-between">
         <div>
-          <p className="text-xs font-medium text-slate-400">Scheduled</p>
-          <h3 className="text-2xl font-extrabold text-emerald-400 mt-1">{stats.scheduled}</h3>
+          <p className="text-xs font-medium text-zinc-500">Scheduled</p>
+          <h3 className="text-xl font-bold text-emerald-600 mt-1">{stats.scheduled}</h3>
         </div>
-        <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
-          <Clock className="w-5 h-5" />
+        <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100">
+          <Clock className="w-4 h-4" />
         </div>
       </div>
 
-      <div className="glass-panel p-4 rounded-xl border border-slate-700/60 flex items-center justify-between">
+      <div className="glass-panel p-4 rounded-xl border border-zinc-200 bg-white flex items-center justify-between">
         <div>
-          <p className="text-xs font-medium text-slate-400">Published</p>
-          <h3 className="text-2xl font-extrabold text-indigo-400 mt-1">{stats.published}</h3>
+          <p className="text-xs font-medium text-zinc-500">Published</p>
+          <h3 className="text-xl font-bold text-blue-600 mt-1">{stats.published}</h3>
         </div>
-        <div className="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl border border-indigo-500/20">
-          <CheckCircle2 className="w-5 h-5" />
+        <div className="p-2.5 bg-blue-50 text-blue-600 rounded-lg border border-blue-100">
+          <CheckCircle2 className="w-4 h-4" />
         </div>
       </div>
 
-      <div className="glass-panel p-4 rounded-xl border border-slate-700/60 flex items-center justify-between">
+      <div className="glass-panel p-4 rounded-xl border border-zinc-200 bg-white flex items-center justify-between">
         <div>
-          <p className="text-xs font-medium text-slate-400">Drafts</p>
-          <h3 className="text-2xl font-extrabold text-amber-400 mt-1">{stats.drafts}</h3>
+          <p className="text-xs font-medium text-zinc-500">Drafts</p>
+          <h3 className="text-xl font-bold text-amber-600 mt-1">{stats.drafts}</h3>
         </div>
-        <div className="p-3 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20">
-          <FileText className="w-5 h-5" />
+        <div className="p-2.5 bg-amber-50 text-amber-600 rounded-lg border border-amber-100">
+          <FileText className="w-4 h-4" />
         </div>
       </div>
     </div>
