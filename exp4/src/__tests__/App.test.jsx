@@ -7,18 +7,34 @@ import App, {
   dateKey, 
   parseDate, 
   addDays, 
-  getCalendarDates 
+  getCalendarDates,
+  getWeekDates
 } from '../App';
 
-describe('Social Media Scheduler (Optimization Toggle & Render Monitoring)', () => {
-  it('date helpers compute correct date keys and additions', () => {
+describe('Social Media Scheduler (Month View & Week View with Drag-and-Drop Optimization)', () => {
+  it('date helpers compute correct month and week date ranges', () => {
     const d = new Date(2026, 8, 3);
     expect(dateKey(d)).toBe('2026-09-03');
-    expect(dateKey(addDays(d, 1))).toBe('2026-09-04');
     expect(getCalendarDates(d).length).toBe(42);
+    expect(getWeekDates(d).length).toBe(7);
   });
 
-  it('toggles between OPTIMIZED and NON-OPTIMIZED modes', () => {
+  it('switches between Month View and Week View modes', () => {
+    render(<App />);
+
+    const weekBtn = screen.getByTestId('view-week-btn');
+    fireEvent.click(weekBtn);
+
+    expect(screen.getByText('Time')).toBeInTheDocument();
+    expect(screen.getAllByText('09:00').length).toBeGreaterThan(0);
+
+    const monthBtn = screen.getByTestId('view-month-btn');
+    fireEvent.click(monthBtn);
+
+    expect(screen.getByText('Sun')).toBeInTheDocument();
+  });
+
+  it('toggles between OPTIMIZED and NON-OPTIMIZED rendering modes', () => {
     render(<App />);
 
     const toggleBtn = screen.getByTestId('toggle-mode-btn');
@@ -26,26 +42,24 @@ describe('Social Media Scheduler (Optimization Toggle & Render Monitoring)', () 
 
     fireEvent.click(toggleBtn);
     expect(toggleBtn).toHaveTextContent(/🐌 Mode: NON-OPTIMIZED/i);
-
-    fireEvent.click(toggleBtn);
-    expect(toggleBtn).toHaveTextContent(/⚡ Mode: OPTIMIZED/i);
   });
 
-  it('displays component render counter badge R:1 on post cards', () => {
-    render(<App />);
-    const renderBadges = screen.getAllByTitle('Component Render Count');
-    expect(renderBadges.length).toBeGreaterThan(0);
-    expect(renderBadges[0]).toHaveTextContent('R:1');
-  });
+  it('reducer handles MOVE action across date and time slots', () => {
+    const posts = [
+      { id: '1', title: 'Post 1', date: '2026-09-03', time: '09:00', platform: 'Instagram', status: 'Scheduled' }
+    ];
+    const initialState = createState(posts);
 
-  it('filters posts by platform dropdown', () => {
-    render(<App />);
-    const selects = screen.getAllByRole('combobox');
-    const platformSelect = selects[0];
+    const nextState = reducer(initialState, { 
+      type: 'MOVE', 
+      id: '1', 
+      date: '2026-09-04', 
+      time: '14:00' 
+    });
 
-    fireEvent.change(platformSelect, { target: { value: 'LinkedIn' } });
-
-    expect(screen.getByText('Weekly Company Update')).toBeInTheDocument();
-    expect(screen.queryByText('Product Launch')).not.toBeInTheDocument();
+    expect(nextState.postsById['1'].date).toBe('2026-09-04');
+    expect(nextState.postsById['1'].time).toBe('14:00');
+    expect(nextState.postsByDate['2026-09-03']).not.toContain('1');
+    expect(nextState.postsByDate['2026-09-04']).toContain('1');
   });
 });

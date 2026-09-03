@@ -74,6 +74,33 @@ select:focus-visible,
   gap: 10px;
 }
 
+/* VIEW MODE PILL */
+.view-mode-pill {
+  display: flex;
+  background: #eef2ff;
+  padding: 3px;
+  border-radius: 9px;
+  border: 1px solid #d9dfeb;
+}
+
+.view-mode-pill button {
+  border: none;
+  background: transparent;
+  padding: 7px 12px;
+  border-radius: 7px;
+  font-weight: 700;
+  font-size: 12px;
+  color: #4b5563;
+  transition: all 0.15s ease;
+  min-height: unset;
+}
+
+.view-mode-pill button.active {
+  background: #5865f2;
+  color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 /* TOGGLE MODE BUTTON */
 
 .toggle-mode-btn {
@@ -278,6 +305,100 @@ select:focus-visible,
 
 .calendar-day.drop-target {
   background: #eef2ff;
+}
+
+
+/* WEEK VIEW STYLES */
+
+.week-view-container {
+  min-width: 980px;
+  overflow-x: auto;
+}
+
+.week-header-grid {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+  border-bottom: 1px solid #dce2ec;
+  background: #f8fafc;
+}
+
+.time-col-header {
+  padding: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  text-align: center;
+  border-right: 1px solid #dce2ec;
+}
+
+.week-day-header {
+  padding: 10px;
+  text-align: center;
+  border-right: 1px solid #dce2ec;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.week-day-header.today {
+  background: #eff6ff;
+  border-top: 3px solid #5865f2;
+}
+
+.week-day-header span {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.week-day-header strong {
+  font-size: 15px;
+  color: #1e293b;
+}
+
+.week-body-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.week-hour-row {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+  min-height: 70px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.time-col {
+  padding: 8px;
+  font-size: 11px;
+  font-family: monospace;
+  font-weight: 600;
+  color: #64748b;
+  text-align: center;
+  background: #f8fafc;
+  border-right: 1px solid #dce2ec;
+}
+
+.week-time-slot {
+  padding: 6px;
+  border-right: 1px solid #e2e8f0;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: background 0.15s ease;
+}
+
+.week-time-slot:hover {
+  background: #f8fafc;
+}
+
+.week-time-slot.drop-target {
+  background: #eef2ff;
+  border: 2px dashed #5865f2;
 }
 
 

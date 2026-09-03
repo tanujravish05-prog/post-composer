@@ -33,22 +33,22 @@ const INITIAL_POSTS = [
     id: "3",
     title: "Customer Story",
     date: "2026-09-05",
-    time: "14:30",
+    time: "14:00",
     platform: "X",
     status: "Draft",
   },
   {
     id: "4",
     title: "Behind The Scenes",
-    date: "2026-09-08",
-    time: "10:30",
+    date: "2026-09-03",
+    time: "15:00",
     platform: "Instagram",
     status: "Scheduled",
   },
   {
     id: "5",
     title: "Engineering Update",
-    date: "2026-09-10",
+    date: "2026-09-01",
     time: "13:00",
     platform: "LinkedIn",
     status: "Published",
@@ -56,11 +56,25 @@ const INITIAL_POSTS = [
   {
     id: "6",
     title: "New Feature Announcement",
-    date: "2026-09-12",
+    date: "2026-09-02",
     time: "16:00",
     platform: "X",
     status: "Scheduled",
   },
+];
+
+const HOURS = [
+  "08:00",
+  "09:00",
+  "10:00",
+  "11:00",
+  "12:00",
+  "13:00",
+  "14:00",
+  "15:00",
+  "16:00",
+  "17:00",
+  "18:00",
 ];
 
 /* =======================================================
@@ -100,8 +114,16 @@ function getCalendarDates(month) {
   );
 }
 
+function getWeekDates(currentDate) {
+  const dayOfWeek = currentDate.getDay();
+  const sunday = addDays(currentDate, -dayOfWeek);
+  return Array.from({ length: 7 }, (_, index) =>
+    dateKey(addDays(sunday, index))
+  );
+}
+
 /* =======================================================
-   NORMALIZED STATE
+   NORMALIZED STATE & REDUCER
 ======================================================= */
 
 function createState(posts) {
@@ -124,10 +146,6 @@ function createState(posts) {
   };
 }
 
-/* =======================================================
-   REDUCER
-======================================================= */
-
 function reducer(state, action) {
   switch (action.type) {
     case "MOVE": {
@@ -138,25 +156,28 @@ function reducer(state, action) {
       }
 
       const from = state.postsByDate[post.date] || [];
-      const to = state.postsByDate[action.date] || [];
+      const targetDate = action.date;
+      const targetTime = action.time || post.time;
 
-      if (post.date === action.date) {
+      if (post.date === targetDate && post.time === targetTime) {
         return state;
       }
+
+      const to = state.postsByDate[targetDate] || [];
 
       return {
         postsById: {
           ...state.postsById,
           [post.id]: {
             ...post,
-            date: action.date,
-            time: action.time || post.time,
+            date: targetDate,
+            time: targetTime,
           },
         },
         postsByDate: {
           ...state.postsByDate,
           [post.date]: from.filter((id) => id !== post.id),
-          [action.date]: [...to, post.id],
+          [targetDate]: to.includes(post.id) ? to : [...to, post.id],
         },
       };
     }
@@ -203,7 +224,7 @@ function reducer(state, action) {
 }
 
 /* =======================================================
-   POST CARD (COMPONENTS: OPTIMIZED vs NON-OPTIMIZED)
+   POST CARD (OPTIMIZED vs NON-OPTIMIZED)
 ======================================================= */
 
 const PostCardContent = ({ post, onPointerDown, onDelete, onMoveKeyboard, isOptimized }) => {
@@ -265,19 +286,17 @@ const PostCardContent = ({ post, onPointerDown, onDelete, onMoveKeyboard, isOpti
   );
 };
 
-// Memoized version for Optimized mode
 const MemoizedPostCard = memo(PostCardContent);
 
 const PostCard = (props) => {
   if (props.isOptimized) {
     return <MemoizedPostCard {...props} />;
   }
-  // Un-memoized version for Non-Optimized mode
   return <PostCardContent {...props} />;
 };
 
 /* =======================================================
-   CALENDAR DAY
+   MONTH CALENDAR DAY CELL
 ======================================================= */
 
 const CalendarDayContent = ({
@@ -290,9 +309,6 @@ const CalendarDayContent = ({
   onMoveKeyboard,
   isOptimized
 }) => {
-  const renderCount = useRef(0);
-  renderCount.current++;
-
   const day = parseDate(date);
   const outside = day.getMonth() !== month.getMonth();
   const today = date === dateKey(new Date());
@@ -361,15 +377,83 @@ const CalendarDay = (props) => {
 };
 
 /* =======================================================
+   WEEK VIEW HOURLY TIME SLOT
+======================================================= */
+
+const WeekTimeSlotContent = ({
+  date,
+  hour,
+  posts,
+  onDrop,
+  onPointerDown,
+  onDelete,
+  onMoveKeyboard,
+  isOptimized
+}) => {
+  const handleDragOver = useCallback((event) => {
+    event.preventDefault();
+    event.currentTarget.classList.add("drop-target");
+  }, []);
+
+  const handleDragLeave = useCallback((event) => {
+    event.currentTarget.classList.remove("drop-target");
+  }, []);
+
+  const handleDrop = useCallback(
+    (event) => {
+      event.preventDefault();
+      event.currentTarget.classList.remove("drop-target");
+      const id = event.dataTransfer.getData("post-id");
+      if (id) {
+        onDrop(id, date, hour);
+      }
+    },
+    [date, hour, onDrop]
+  );
+
+  return (
+    <div
+      className="week-time-slot"
+      data-date={date}
+      data-time={hour}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {posts.map((post) => (
+        <PostCard
+          key={post.id}
+          post={post}
+          onPointerDown={onPointerDown}
+          onDelete={onDelete}
+          onMoveKeyboard={onMoveKeyboard}
+          isOptimized={isOptimized}
+        />
+      ))}
+    </div>
+  );
+};
+
+const MemoizedWeekTimeSlot = memo(WeekTimeSlotContent);
+
+const WeekTimeSlot = (props) => {
+  if (props.isOptimized) {
+    return <MemoizedWeekTimeSlot {...props} />;
+  }
+  return <WeekTimeSlotContent {...props} />;
+};
+
+/* =======================================================
    MAIN APPLICATION
 ======================================================= */
 
 export function App() {
   const [state, dispatch] = useReducer(reducer, INITIAL_POSTS, createState);
-  const [month, setMonth] = useState(new Date(2026, 8, 1));
+  const [currentDate, setCurrentDate] = useState(new Date(2026, 8, 3));
   const [search, setSearch] = useState("");
   const [platform, setPlatform] = useState("All");
   const [status, setStatus] = useState("All");
+  const [viewMode, setViewMode] = useState("month"); // 'month' | 'week'
   const [message, setMessage] = useState("Calendar ready");
 
   // Mode Toggle State: Optimized (true) vs Non-Optimized (false)
@@ -381,12 +465,17 @@ export function App() {
   const dragRef = useRef(null);
 
   /* =====================================================
-     CALENDAR DATES
+     CALENDAR DATES & WEEK DATES
   ===================================================== */
 
-  const dates = useMemo(
-    () => getCalendarDates(month),
-    [month]
+  const monthDates = useMemo(
+    () => getCalendarDates(currentDate),
+    [currentDate]
+  );
+
+  const weekDates = useMemo(
+    () => getWeekDates(currentDate),
+    [currentDate]
   );
 
   /* =====================================================
@@ -395,8 +484,9 @@ export function App() {
 
   const filteredPostsByDate = useMemo(() => {
     const result = {};
+    const datesToFilter = viewMode === "month" ? monthDates : weekDates;
 
-    dates.forEach((date) => {
+    datesToFilter.forEach((date) => {
       const ids = state.postsByDate[date] || [];
 
       result[date] = ids
@@ -418,14 +508,14 @@ export function App() {
     });
 
     return result;
-  }, [dates, state.postsByDate, state.postsById, search, platform, status]);
+  }, [monthDates, weekDates, viewMode, state.postsByDate, state.postsById, search, platform, status]);
 
   /* =====================================================
      MOVE POST
   ===================================================== */
 
   const movePost = useCallback(
-    (id, date) => {
+    (id, date, time = null) => {
       const post = state.postsById[id];
       if (!post) return;
 
@@ -433,9 +523,10 @@ export function App() {
         type: "MOVE",
         id,
         date,
+        time: time || post.time,
       });
 
-      setMessage(`${post.title} moved to ${date}`);
+      setMessage(`${post.title} moved to ${date} ${time || post.time}`);
     },
     [state.postsById]
   );
@@ -445,8 +536,8 @@ export function App() {
   ===================================================== */
 
   const handleDrop = useCallback(
-    (id, date) => {
-      movePost(id, date);
+    (id, date, time = null) => {
+      movePost(id, date, time);
     },
     [movePost]
   );
@@ -480,22 +571,10 @@ export function App() {
         const x = pointerEvent.clientX - drag.startX;
         const y = pointerEvent.clientY - drag.startY;
 
-        /*
-          OPTIMIZED vs NON-OPTIMIZED MODE
-
-          In OPTIMIZED mode:
-          - No React state update during drag!
-          - The browser directly transforms DOM elements.
-          - Zero React re-renders per pointer frame.
-
-          In NON-OPTIMIZED mode:
-          - Calls React state setter on EVERY pointer movement frame.
-          - Triggers 60+ React re-renders per second while dragging.
-        */
         drag.element.style.transform = `translate3d(${x}px, ${y}px, 0)`;
 
         if (!isOptimized) {
-          // Force React state re-render on every frame!
+          // Force React state re-render on every frame in non-optimized mode!
           setDragTick((prev) => prev + 1);
         }
       };
@@ -512,12 +591,14 @@ export function App() {
           pointerEvent.clientY
         );
 
-        const day = target?.closest("[data-date]");
+        const slot = target?.closest("[data-date]");
 
-        if (day) {
-          const targetDate = day.dataset.date;
-          if (targetDate && targetDate !== drag.post.date) {
-            movePost(drag.post.id, targetDate);
+        if (slot) {
+          const targetDate = slot.dataset.date;
+          const targetTime = slot.dataset.time || null;
+
+          if (targetDate) {
+            movePost(drag.post.id, targetDate, targetTime);
           }
         }
 
@@ -595,38 +676,54 @@ export function App() {
       post: newPost,
     });
 
-    setMessage(`${title} scheduled for ${date}`);
+    setMessage(`${title} scheduled for ${date} at ${time}`);
   }, []);
 
   /* =====================================================
      NAVIGATION
   ===================================================== */
 
-  const previousMonth = useCallback(() => {
-    setMonth((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1));
-  }, []);
+  const previousPeriod = useCallback(() => {
+    setCurrentDate((current) => {
+      if (viewMode === "month") {
+        return new Date(current.getFullYear(), current.getMonth() - 1, 1);
+      } else {
+        return addDays(current, -7);
+      }
+    });
+  }, [viewMode]);
 
-  const nextMonth = useCallback(() => {
-    setMonth((current) => new Date(current.getFullYear(), current.getMonth() + 1, 1));
-  }, []);
+  const nextPeriod = useCallback(() => {
+    setCurrentDate((current) => {
+      if (viewMode === "month") {
+        return new Date(current.getFullYear(), current.getMonth() + 1, 1);
+      } else {
+        return addDays(current, 7);
+      }
+    });
+  }, [viewMode]);
 
   const goToday = useCallback(() => {
-    const today = new Date();
-    setMonth(new Date(today.getFullYear(), today.getMonth(), 1));
+    setCurrentDate(new Date());
   }, []);
 
   /* =====================================================
-     MONTH NAME
+     HEADER LABEL
   ===================================================== */
 
-  const monthName = useMemo(
-    () =>
-      month.toLocaleDateString("en-US", {
+  const periodLabel = useMemo(() => {
+    if (viewMode === "month") {
+      return currentDate.toLocaleDateString("en-US", {
         month: "long",
         year: "numeric",
-      }),
-    [month]
-  );
+      });
+    } else {
+      const weekDaysList = getWeekDates(currentDate);
+      const start = parseDate(weekDaysList[0]);
+      const end = parseDate(weekDaysList[6]);
+      return `${start.toLocaleDateString("en-US", { month: "short", day: "numeric" })} - ${end.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`;
+    }
+  }, [currentDate, viewMode]);
 
   const totalPosts = Object.keys(state.postsById).length;
 
@@ -644,6 +741,26 @@ export function App() {
         </div>
 
         <div className="header-actions">
+          {/* View Mode Switcher Pill */}
+          <div className="view-mode-pill">
+            <button
+              type="button"
+              className={viewMode === "month" ? "active" : ""}
+              onClick={() => setViewMode("month")}
+              data-testid="view-month-btn"
+            >
+              Month View
+            </button>
+            <button
+              type="button"
+              className={viewMode === "week" ? "active" : ""}
+              onClick={() => setViewMode("week")}
+              data-testid="view-week-btn"
+            >
+              Week View
+            </button>
+          </div>
+
           {/* Mode Toggle Button */}
           <button
             type="button"
@@ -693,41 +810,93 @@ export function App() {
       {/* CALENDAR CONTAINER */}
       <section className="calendar-container">
         <div className="calendar-toolbar">
-          <button type="button" onClick={previousMonth}>
+          <button type="button" onClick={previousPeriod}>
             ←
           </button>
           <button type="button" onClick={goToday}>
             Today
           </button>
-          <h2>{monthName}</h2>
-          <button type="button" onClick={nextMonth}>
+          <h2>{periodLabel}</h2>
+          <button type="button" onClick={nextPeriod}>
             →
           </button>
         </div>
 
-        {/* WEEK DAYS */}
-        <div className="weekdays">
-          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-            <div key={day}>{day}</div>
-          ))}
-        </div>
+        {/* MONTH VIEW */}
+        {viewMode === "month" && (
+          <>
+            <div className="weekdays">
+              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                <div key={day}>{day}</div>
+              ))}
+            </div>
 
-        {/* CALENDAR GRID */}
-        <div className="calendar-grid">
-          {dates.map((date) => (
-            <CalendarDay
-              key={date}
-              date={date}
-              month={month}
-              posts={filteredPostsByDate[date] || []}
-              onDrop={handleDrop}
-              onPointerDown={handlePointerDown}
-              onDelete={deletePost}
-              onMoveKeyboard={moveKeyboard}
-              isOptimized={isOptimized}
-            />
-          ))}
-        </div>
+            <div className="calendar-grid">
+              {monthDates.map((date) => (
+                <CalendarDay
+                  key={date}
+                  date={date}
+                  month={currentDate}
+                  posts={filteredPostsByDate[date] || []}
+                  onDrop={handleDrop}
+                  onPointerDown={handlePointerDown}
+                  onDelete={deletePost}
+                  onMoveKeyboard={moveKeyboard}
+                  isOptimized={isOptimized}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* WEEK VIEW WITH HOURLY DRAG AND DROP */}
+        {viewMode === "week" && (
+          <div className="week-view-container">
+            <div className="week-header-grid">
+              <div className="time-col-header">Time</div>
+              {weekDates.map((date) => {
+                const day = parseDate(date);
+                const isToday = date === dateKey(new Date());
+                return (
+                  <div
+                    key={date}
+                    className={`week-day-header ${isToday ? "today" : ""}`}
+                  >
+                    <span>{day.toLocaleDateString("en-US", { weekday: "short" })}</span>
+                    <strong>{day.getDate()}</strong>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="week-body-grid">
+              {HOURS.map((hour) => (
+                <div key={hour} className="week-hour-row">
+                  <div className="time-col">{hour}</div>
+                  {weekDates.map((date) => {
+                    const slotPosts = (filteredPostsByDate[date] || []).filter(
+                      (p) => p.time.startsWith(hour.split(":")[0])
+                    );
+
+                    return (
+                      <WeekTimeSlot
+                        key={`${date}_${hour}`}
+                        date={date}
+                        hour={hour}
+                        posts={slotPosts}
+                        onDrop={handleDrop}
+                        onPointerDown={handlePointerDown}
+                        onDelete={deletePost}
+                        onMoveKeyboard={moveKeyboard}
+                        isOptimized={isOptimized}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* STATUS FOOTER */}
@@ -751,4 +920,5 @@ export {
   parseDate,
   addDays,
   getCalendarDates,
+  getWeekDates,
 };
