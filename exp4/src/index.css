@@ -68,6 +68,43 @@ select:focus-visible,
   color: #697386;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* TOGGLE MODE BUTTON */
+
+.toggle-mode-btn {
+  border: 1px solid #d9dfeb;
+  border-radius: 9px;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.toggle-mode-btn.optimized {
+  background: #10b981;
+  color: white;
+  border-color: #059669;
+}
+
+.toggle-mode-btn.optimized:hover {
+  background: #059669;
+}
+
+.toggle-mode-btn.unoptimized {
+  background: #ef4444;
+  color: white;
+  border-color: #dc2626;
+}
+
+.toggle-mode-btn.unoptimized:hover {
+  background: #dc2626;
+}
+
 .add-button {
   border: none;
 
@@ -260,7 +297,7 @@ select:focus-visible,
   font-weight: 700;
 }
 
-.day-number span {
+.day-number span.today-label {
   font-size: 9px;
 
   color: #5865f2;
@@ -341,6 +378,32 @@ select:focus-visible,
   justify-content: space-between;
 }
 
+.post-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.render-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.render-badge.badge-optimized {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.render-badge.badge-unoptimized {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
 .post-time {
   color: #6b7485;
 
@@ -401,6 +464,8 @@ select:focus-visible,
 
   flex-wrap: wrap;
 
+  align-items: center;
+
   gap: 18px;
 
   padding: 12px 2px;
@@ -408,6 +473,23 @@ select:focus-visible,
   color: #687386;
 
   font-size: 13px;
+}
+
+.status-badge {
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.status-badge.badge-optimized {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.badge-unoptimized {
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 
