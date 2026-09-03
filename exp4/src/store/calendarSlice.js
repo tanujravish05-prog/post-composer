@@ -8,6 +8,7 @@ const initialState = {
   selectedStatus: 'all', // 'all' | 'scheduled' | 'published' | 'draft'
   searchQuery: '',
   theme: 'light',
+  activeNavTab: 'calendar', // 'calendar' | 'analytics'
   toasts: [],
 };
 
@@ -29,6 +30,9 @@ const calendarSlice = createSlice({
     },
     setSearchQuery: (state, action) => {
       state.searchQuery = action.payload;
+    },
+    setActiveNavTab: (state, action) => {
+      state.activeNavTab = action.payload;
     },
     toggleTheme: (state) => {
       state.theme = state.theme === 'dark' ? 'light' : 'dark';
@@ -57,6 +61,7 @@ export const {
   setSelectedPlatform, 
   setSelectedStatus,
   setSearchQuery, 
+  setActiveNavTab,
   toggleTheme, 
   addToast,
   removeToast
